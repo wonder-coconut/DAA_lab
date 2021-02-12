@@ -244,18 +244,18 @@ partitiioning and sorting*/
     {
         if(ch == 1)//roll
         {
-            while(teamset[left].roll <= pivot.roll)//searching for elements on the wrong side of the array w.r.t. pivot
+            while(teamset[left].roll < pivot.roll)//searching for elements on the wrong side of the array w.r.t. pivot
                 left++;
 
-            while(teamset[right].roll >= pivot.roll)
+            while(teamset[right].roll > pivot.roll)
                 right--;
         }
         else if (ch == 2)//team
         {
-            while(teamset[left].team <= pivot.team)
+            while(teamset[left].team < pivot.team)
                 left++;
 
-            while(teamset[right].team >= pivot.team)
+            while(teamset[right].team > pivot.team)
                 right--;
         }
         else if (ch == 3)//name
@@ -323,7 +323,15 @@ partitiioning and sorting*/
             swap(&teamset[left],&teamset[right]);//swapping the elements thus bringing them to the proper side of the array w.r.t. pivot
     }
     
-    swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
+    if(ch == 3)
+    {
+        if(strcmp(teamset[right].name,teamset[l].name) > 0)
+            swap(&teamset[left],&teamset[l]);
+        else
+            swap(&teamset[right],&teamset[l]);
+    }
+    else
+        swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
     return right;//partition index
 }
 
@@ -362,7 +370,7 @@ int main(int argc , char *argv[])//mainfunction
         return 0;
     }
 
-    struct team teamset[86];
+    struct team teamset[50];
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
     input(teamset, len);
