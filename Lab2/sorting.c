@@ -218,17 +218,22 @@ int main(int argc , char *argv[])//mainfunction
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
     input(teamset, len);
-
-    /*if(ch2 == 1)
-        insertionSort(teamset,ch1);
-    else if(ch2 == 2)
-        selectionSort(teamset,ch1);*/
+    
     int l, r;
     l = 0;
     r = len - 1;
 
+    if(ch2 == 1)
+    {
+        printf("merge sort\n");
+        mergeSort(teamset, l, r, ch1);
+    }
+    //else if(ch2 == 2)
+        //quickSort(teamset, l, r, ch1);
+
+
     //printf("%d\n",len2);
-    mergeSort(teamset, l, r, ch1);
+    
     //printList(teamset,len);
     printListFile(teamset,len);
     return 0;
