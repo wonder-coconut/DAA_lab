@@ -71,20 +71,20 @@ void merge(struct team *teamset , int l , int m , int r)
     int lenl = m - l + 1;
     int lenr = r - m;
     
-    //int L[lenl], R[lenr];
-    struct team L[lenl];
-    struct team R[lenr];
+    int L[lenl], R[lenr];
+    //struct team L[lenl];
+    //struct team R[lenr];
 
     int i,j,k;
     i = j = k = 0;
     
     for(i = 0 ; i < lenl ; i++)
-        //L[i] = teamset[l+i].roll;
-        equate(&L[i],&teamset[i]);
+        L[i] = teamset[l+i].roll;
+        //equate(&L[i],&teamset[i]);
 
     for(i = 0 ; i < lenr ; i++)
-        //R[i] = teamset[m+i+1].roll;
-        equate(&R[i],&teamset[i]);
+        R[i] = teamset[m+i+1].roll;
+        //equate(&R[i],&teamset[i]);
 
     i = j = 0;
     k = l;
@@ -92,16 +92,16 @@ void merge(struct team *teamset , int l , int m , int r)
 
     while( i < lenl && j < lenr)
     {
-        if(L[i].roll <= R[j].roll)
+        if(/*L[i].roll <= R[j].roll*/L[i] <= R[i])
         {
-            //teamset[k].roll = L[i];
-            equate(&teamset[k],&L[i]);
+            teamset[k].roll = L[i];
+            //equate(&teamset[k],&L[i]);
             i++;
         }
         else
         {
-            //teamset[k].roll = R[j];
-            equate(&teamset[k],&R[j]);
+            teamset[k].roll = R[j];
+            //equate(&teamset[k],&R[j]);
             j++;
         }
         k++;
@@ -109,16 +109,16 @@ void merge(struct team *teamset , int l , int m , int r)
 
     while(i < lenl)
     {
-        //teamset[k].roll = L[i];
-        equate(&teamset[k],&L[i]);
+        teamset[k].roll = L[i];
+        //equate(&teamset[k],&L[i]);
         k++;
         i++;
     }
     
     while(j < lenr)
     {
-        //teamset[k].roll = R[j];
-        equate(&teamset[k],&R[j]);
+        teamset[k].roll = R[j];
+        //equate(&teamset[k],&R[j]);
         k++;
         j++;
     }
