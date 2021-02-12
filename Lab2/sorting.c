@@ -93,7 +93,7 @@ void merge(struct team *teamset , int l , int m , int r)
 
     while( i < lenl && j < lenr)
     {
-        if(L[i].roll <= R[j].roll/*L[i] <= R[i]*/)
+        if(strcmp(L[i].name,R[j].name) < 0/*L[i].team <= R[j].team*//*L[i] <= R[i]*/)
         {
             //teamset[k].roll = L[i];
             equate(&teamset[k],&L[i]);
@@ -192,7 +192,7 @@ int main(int argc , char *argv[])//mainfunction
         return 0;
     }
 
-    struct team teamset[10];
+    struct team teamset[86];
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
     input(teamset, len);
