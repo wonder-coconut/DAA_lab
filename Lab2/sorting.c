@@ -96,19 +96,19 @@ void printListFile(struct team * teamset, int len)//writing the list to the file
     
 }
 
-void merge(struct team *teamset , int l , int m , int r, int ch)
+void merge(struct team *teamset , int l , int m , int r, int ch)//merge two arrays in an ascending order
 {
 
     int lenl = m - l + 1;
-    int lenr = r - m;
+    int lenr = r - m;//length of the two arrays to be merged
     
     struct team L[lenl];
     struct team R[lenr];
 
-    int i,j,k;
+    int i,j,k;//indices for left array, right array, and main array respectively
     i = j = k = 0;
     
-    for(i = 0 ; i < lenl ; i++)
+    for(i = 0 ; i < lenl ; i++)//dividing array into two subarrays
         equate(&L[i],&teamset[l+i]);
 
     for(i = 0 ; i < lenr ; i++)
@@ -120,9 +120,9 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
 
     while( i < lenl && j < lenr)
     {
-        if(ch == 1)
+        if(ch == 1)//rollnumber
         {
-            if(L[i].roll < R[j].roll)
+            if(L[i].roll < R[j].roll)//adding the smallest of the two array elements continuously
             {
                 equate(&teamset[k],&L[i]);
                 i++;
@@ -133,7 +133,7 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
                 j++;
             }
         }
-        else if(ch == 2)
+        else if(ch == 2)//team number
         {
             if(L[i].team < R[j].team)
             {
@@ -146,7 +146,7 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
                 j++;
             }
         }
-        else if(ch == 3)
+        else if(ch == 3)//name sort
         {
             if(strcmp(L[i].name,R[j].name) < 0)
             {
@@ -159,7 +159,7 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
                 j++;
             }
         }
-        else if(ch == -1)
+        else if(ch == -1)//priority sort, engages next priority field when encountering a case of equality
         {
             if(L[i].team < R[j].team)
             {
@@ -201,7 +201,7 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
         k++;
     }
 
-    while(i < lenl)
+    while(i < lenl)//adding remaining elements, if any (this occurs because lenl might not be equal to lenr)
     {
         equate(&teamset[k],&L[i]);
         k++;
@@ -217,37 +217,40 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
 
 }
 
-void mergeSort(struct team *teamset , int l , int r, int ch)
+void mergeSort(struct team *teamset , int l , int r, int ch)//sorting two arrays using recursive algorithms
 {
     if(l < r)
     {
-        int m = (l + r)/2;
+        int m = (l + r)/2;//midpoint for division of subarrays
 
-        mergeSort(teamset , l , m, ch);
-        mergeSort(teamset , m + 1 , r, ch);
+        mergeSort(teamset , l , m, ch);//sorting left subarray
+        mergeSort(teamset , m + 1 , r, ch);//sorting right subarray
 
-        merge(teamset , l , m , r, ch);
+        merge(teamset , l , m , r, ch);//merging the two subarrays
     }
 }
 
 int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
+/*manipulates the array to group the elements lesser and greater than the pivot elements to the left
+and right of the pivot element respectively, and returns the position of the pivot element for further
+partitiioning and sorting*/
 {
     int left, right;
 
-    left = l+1;
+    left = l+1;//since we take the first element as the pivot, we increment the left pointer by one
     right = r;
 
     while(left < right)
     {
-        if(ch == 1)
+        if(ch == 1)//roll
         {
-            while(teamset[left].roll <= pivot.roll)
+            while(teamset[left].roll <= pivot.roll)//searching for elements on the wrong side of the array w.r.t. pivot
                 left++;
 
             while(teamset[right].roll >= pivot.roll)
                 right--;
         }
-        else if (ch == 2)
+        else if (ch == 2)//team
         {
             while(teamset[left].team <= pivot.team)
                 left++;
@@ -255,7 +258,7 @@ int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
             while(teamset[right].team >= pivot.team)
                 right--;
         }
-        else if (ch == 3)
+        else if (ch == 3)//name
         {
             while(strcmp(teamset[left].name,pivot.name) <= 0)
                 left++;
@@ -263,7 +266,7 @@ int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
             while(strcmp(teamset[right].name,pivot.name) >= 0)
                 right--;
         }
-        else if (ch == -1)
+        else if (ch == -1)//priority field sort
         {
             while(1)
             {
@@ -317,26 +320,25 @@ int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
         if(left >= right)
             break;
         else
-            swap(&teamset[left],&teamset[right]);
+            swap(&teamset[left],&teamset[right]);//swapping the elements thus bringing them to the proper side of the array w.r.t. pivot
     }
     
-    swap(&teamset[right],&teamset[l]);
-    return right;
+    swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
+    return right;//partition index
 }
 
-void quickSort(struct team *teamset, int l , int r, int ch)
+void quickSort(struct team *teamset, int l , int r, int ch)//recursive algorithm to sort an array with a pivot element
 {
     if(l >= r)
         return;
     else
     {
         struct team pivot;
-        //int pivot = arr[l];
-        equate(&pivot,&teamset[l]);
-        int part = partition(teamset, l , r, pivot, ch);
+        equate(&pivot,&teamset[l]);//first element as pivot
+        int part = partition(teamset, l , r, pivot, ch);//partition index
 
-        quickSort(teamset, l, part - 1, ch);
-        quickSort(teamset, part + 1, r, ch);
+        quickSort(teamset, l, part - 1, ch);//sorting the left subarray
+        quickSort(teamset, part + 1, r, ch);//sorting the right subarray
     }
 }
 
@@ -374,9 +376,6 @@ int main(int argc , char *argv[])//mainfunction
     else if(ch2 == 2)
         quickSort(teamset, l, r, ch1);
 
-    //printf("%d\n",len2);
-    
-    //printList(teamset,len);
     printListFile(teamset,len);
     return 0;
 }
