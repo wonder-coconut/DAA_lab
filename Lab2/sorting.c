@@ -66,6 +66,36 @@ void equate(struct team *a,struct team *b)//equates two team structs
     a->team = b->team;
 }
 
+void printList(struct team *teamset, int len) //printing all elements, for convenience
+{
+    int i=0;
+    while(i<len)
+    {
+        printf("%d %s %d\n",teamset[i].roll,teamset[i].name,teamset[i].team);
+        i++;
+    }
+}
+
+void printListFile(struct team * teamset, int len)//writing the list to the file
+{
+    FILE *fileOutput;
+    fileOutput = fopen("DAALab_Output1.txt","w");
+    char format[10];
+    int i = 0;
+    while(i<len)
+    {
+        if(teamset[i].roll<10)
+            strcpy(format,"19XJ1A050");//reformatting the roll number, as only the last two digits are sliced into the struct variable
+        else
+            strcpy(format,"19XJ1A05");
+        
+        fprintf(fileOutput,"%s%d %s %d\n",format,teamset[i].roll,teamset[i].name,teamset[i].team);
+        i++;
+    }
+    fclose(fileOutput);
+    
+}
+
 void merge(struct team *teamset , int l , int m , int r, int ch)
 {
 
@@ -161,37 +191,64 @@ void mergeSort(struct team *teamset , int l , int r, int ch)
     }
 }
 
-
-
-
-void printList(struct team *teamset, int len) //printing all elements, for convenience
+int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
 {
-    int i=0;
-    while(i<len)
+    int left, right;
+
+    left = l+1;
+    right = r;
+
+    while(left < right)
     {
-        printf("%d %s %d\n",teamset[i].roll,teamset[i].name,teamset[i].team);
-        i++;
+        if(ch == 1)
+        {
+            while(teamset[left].roll <= pivot.roll)
+                left++;
+
+            while(teamset[right].roll >= pivot.roll)
+                right--;
+        }
+        else if (ch == 2)
+        {
+            while(teamset[left].team <= pivot.team)
+                left++;
+
+            while(teamset[right].team >= pivot.team)
+                right--;
+        }
+        else if (ch == 3)
+        {
+            while(strcmp(teamset[left].name,pivot.name) <= 0)
+                left++;
+
+            while(strcmp(teamset[right].name,pivot.name) >= 0)
+                right--;
+        }
+
+        if(left >= right)
+            break;
+        else
+            swap(&teamset[left],&teamset[right]);
     }
+    
+    swap(&teamset[right],&teamset[l]);
+    return right;
 }
 
-void printListFile(struct team * teamset, int len)//writing the list to the file
+void quickSort(struct team *teamset, int l , int r, int ch)
 {
-    FILE *fileOutput;
-    fileOutput = fopen("DAALab_Output1.txt","w");
-    char format[10];
-    int i = 0;
-    while(i<len)
+    if(l >= r)
+        return;
+    else
     {
-        if(teamset[i].roll<10)
-            strcpy(format,"19XJ1A050");//reformatting the roll number, as only the last two digits are sliced into the struct variable
-        else
-            strcpy(format,"19XJ1A05");
-        
-        fprintf(fileOutput,"%s%d %s %d\n",format,teamset[i].roll,teamset[i].name,teamset[i].team);
-        i++;
+        struct team pivot;
+        //int pivot = arr[l];
+        equate(&pivot,&teamset[l]);
+        int part = partition(teamset, l , r, pivot, ch);
+
+        quickSort(teamset, l, part - 1, ch);
+        quickSort(teamset, part + 1, r, ch);
     }
-    fclose(fileOutput);
-    
 }
 
 int main(int argc , char *argv[])//mainfunction
@@ -224,12 +281,10 @@ int main(int argc , char *argv[])//mainfunction
     r = len - 1;
 
     if(ch2 == 1)
-    {
-        printf("merge sort\n");
         mergeSort(teamset, l, r, ch1);
-    }
-    //else if(ch2 == 2)
-        //quickSort(teamset, l, r, ch1);
+    else if(ch2 == 2)
+        quickSort(teamset, l, r, ch1);
+
 
 
     //printf("%d\n",len2);
