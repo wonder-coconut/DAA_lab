@@ -20,7 +20,7 @@ int rollConvert(char roll[50]) //function to convert a string roll number to a u
     return result;
 }
 
-void input(struct team *teamset)//function to input data into struct array from file, for convenience
+void input(struct team *teamset, int len)//function to input data into struct array from file, for convenience
 {
     FILE *fileInput;
     fileInput = fopen("DAALab_Input1.txt","r");
@@ -28,8 +28,9 @@ void input(struct team *teamset)//function to input data into struct array from 
     char temp[50];
     int ch = 2;
     int i = 0;
+
     
-    while(i<86)
+    while(i<len)
     {
         fscanf(fileInput,"%s",temp);
         teamset[i].roll = rollConvert(temp);
@@ -141,23 +142,23 @@ void mergeSort(struct team *teamset , int l , int r)
 
 
 
-void printList(struct team *teamset) //printing all elements, for convenience
+void printList(struct team *teamset, int len) //printing all elements, for convenience
 {
     int i=0;
-    while(i<86)
+    while(i<len)
     {
         printf("%d %s %d\n",teamset[i].roll,teamset[i].name,teamset[i].team);
         i++;
     }
 }
 
-void printListFile(struct team * teamset)//writing the list to the file
+void printListFile(struct team * teamset, int len)//writing the list to the file
 {
     FILE *fileOutput;
     fileOutput = fopen("DAALab_Output1.txt","w");
     char format[10];
     int i = 0;
-    while(i<86)
+    while(i<len)
     {
         if(teamset[i].roll<10)
             strcpy(format,"19XJ1A050");//reformatting the roll number, as only the last two digits are sliced into the struct variable
@@ -192,18 +193,21 @@ int main(int argc , char *argv[])//mainfunction
     }
 
     struct team teamset[86];
-    input(teamset);
+    int len = sizeof(teamset)/sizeof(teamset[0]);
+
+    input(teamset, len);
 
     /*if(ch2 == 1)
         insertionSort(teamset,ch1);
     else if(ch2 == 2)
         selectionSort(teamset,ch1);*/
-    int l, r, len;
-    len = 86;
+    int l, r;
     l = 0;
     r = len - 1;
 
+    //printf("%d\n",len2);
     mergeSort(teamset, l, r);
-    printListFile(teamset);
+    printList(teamset,len);
+    printListFile(teamset,len);
     return 0;
 }
