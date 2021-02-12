@@ -66,7 +66,7 @@ void equate(struct team *a,struct team *b)//equates two team structs
     a->team = b->team;
 }
 
-void merge(struct team *teamset , int l , int m , int r)
+void merge(struct team *teamset , int l , int m , int r, int ch)
 {
 
     int lenl = m - l + 1;
@@ -90,15 +90,44 @@ void merge(struct team *teamset , int l , int m , int r)
 
     while( i < lenl && j < lenr)
     {
-        if(strcmp(L[i].name,R[j].name) < 0)
+        if(ch == 1)
         {
-            equate(&teamset[k],&L[i]);
-            i++;
+            if(L[i].roll < R[j].roll)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
         }
-        else
+        else if(ch == 2)
         {
-            equate(&teamset[k],&R[j]);
-            j++;
+            if(L[i].team < R[j].team)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(L[i].name,R[j].name) < 0)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
         }
         k++;
     }
@@ -119,16 +148,16 @@ void merge(struct team *teamset , int l , int m , int r)
 
 }
 
-void mergeSort(struct team *teamset , int l , int r)
+void mergeSort(struct team *teamset , int l , int r, int ch)
 {
     if(l < r)
     {
         int m = (l + r)/2;
 
-        mergeSort(teamset , l , m);
-        mergeSort(teamset , m + 1 , r);
+        mergeSort(teamset , l , m, ch);
+        mergeSort(teamset , m + 1 , r, ch);
 
-        merge(teamset , l , m , r);
+        merge(teamset , l , m , r, ch);
     }
 }
 
@@ -199,8 +228,8 @@ int main(int argc , char *argv[])//mainfunction
     r = len - 1;
 
     //printf("%d\n",len2);
-    mergeSort(teamset, l, r);
-    printList(teamset,len);
+    mergeSort(teamset, l, r, ch1);
+    //printList(teamset,len);
     printListFile(teamset,len);
     return 0;
 }
