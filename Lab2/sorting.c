@@ -260,61 +260,57 @@ int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
             while(strcmp(teamset[left].name,pivot.name) <= 0)
                 left++;
 
-            while(strcmp(teamset[right].name,pivot.name) > 0)
+            while(strcmp(teamset[right].name,pivot.name) >= 0)
                 right--;
         }
         else if (ch == -1)
         {
-            printf("left:%d\tright:%d\n",left,right);
             while(1)
             {
-                if(teamset[left].team > pivot.team)
-                    break;
-
-                else if(teamset[left].team == pivot.team)
+                if(teamset[left].team == pivot.team)
                 {
-                    if(teamset[left].roll > pivot.team)
-                        break;
-
-                    else if(teamset[left].roll == pivot.roll)
+                    if(teamset[left].roll == pivot.team)
                     {
-                        if(strcmp(teamset[right].name,pivot.name) >= 0)
-                            break;
-                        
-                        else
+                        if(strcmp(teamset[left].name,pivot.name) <= 0)
                             left++;
+
+                        else
+                            break;                        
                     }
-                    else
+                    else if(teamset[left].roll < pivot.roll)
                         left++;
+                    
+                    else
+                        break;
                 }
-                else
+                else if(teamset[left].team < pivot.team)
                     left++;
+                else
+                    break;
             }
 
             while(1)
             {
-                printf("left:%d\tright:%d\n",left,right);
-                if(teamset[right].team < pivot.team)
-                    break;
-
-                else if(teamset[right].team == pivot.team)
+                if(teamset[right].team == pivot.team)
                 {
-                    if(teamset[right].roll < pivot.team)
-                        break;
-
-                    else if(teamset[right].roll == pivot.roll)
+                    if(teamset[right].roll == pivot.team)
                     {
-                        if(strcmp(teamset[right].name,pivot.name) <= 0)
-                            break;
-                        
-                        else
+                        if(strcmp(teamset[right].name,pivot.name) >= 0)
                             right--;
+
+                        else
+                            break;                        
                     }
-                    else
+                    else if(teamset[right].roll > pivot.roll)
                         right--;
+                    
+                    else
+                        break;
                 }
-                else
+                else if(teamset[right].team > pivot.team)
                     right--;
+                else
+                    break;
             }
         }
 
