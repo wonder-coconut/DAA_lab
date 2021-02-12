@@ -159,6 +159,45 @@ void merge(struct team *teamset , int l , int m , int r, int ch)
                 j++;
             }
         }
+        else if(ch == -1)
+        {
+            if(L[i].team < R[j].team)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else if(L[i].team == R[j].team)
+            {
+                if(L[i].roll < R[j].roll)
+                {
+                    equate(&teamset[k],&L[i]);
+                    i++;
+                }
+                else if(L[i].team == R[j].team)
+                {
+                    if(strcmp(L[i].name,R[j].name) < 0)
+                    {
+                        equate(&teamset[k],&L[i]);
+                        i++;
+                    }
+                    else
+                    {
+                        equate(&teamset[k],&R[j]);
+                        j++;
+                    }
+                }
+                else
+                {
+                    equate(&teamset[k],&R[j]);
+                    j++;
+                }          
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
         k++;
     }
 
@@ -284,8 +323,6 @@ int main(int argc , char *argv[])//mainfunction
         mergeSort(teamset, l, r, ch1);
     else if(ch2 == 2)
         quickSort(teamset, l, r, ch1);
-
-
 
     //printf("%d\n",len2);
     
