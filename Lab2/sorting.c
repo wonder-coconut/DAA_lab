@@ -96,6 +96,38 @@ void printListFile(struct team * teamset, int len)//writing the list to the file
     
 }
 
+int checkSort(struct team* teamset, int len, int ch)//checking whether the array is sorted
+{
+    int res = 1;
+    for(int i = 0 ; i < len-1 ; i++)
+    {
+        if(ch == 1)
+        {
+            if(teamset[i].roll > teamset[i+1].roll)
+            {
+                res = 0;
+                printf("%d\t%d\n",teamset[i].roll,teamset[i+1].roll);
+            }
+        }
+        else if(ch == 2)
+        {
+            if(teamset[i].team > teamset[i+1].team)
+            {
+                res = 0;
+                printf("%d\t%d\n",teamset[i].team,teamset[i+1].team);
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(teamset[i].name, teamset[i+1].name) > 0)
+            {
+                res = 0;
+                printf("%s\t%s\n",teamset[i].name,teamset[i+1].name);
+            }
+        }
+    }
+    return res;
+} 
 void merge(struct team *teamset , int l , int m , int r, int ch)//merge two arrays in an ascending order
 {
 
@@ -260,7 +292,7 @@ partitiioning and sorting*/
         }
         else if (ch == 3)//name
         {
-            while(strcmp(teamset[left].name,pivot.name) <= 0)
+            while(strcmp(teamset[left].name,pivot.name) < 0)
                 left++;
 
             while(strcmp(teamset[right].name,pivot.name) >= 0)
@@ -322,16 +354,9 @@ partitiioning and sorting*/
         else
             swap(&teamset[left],&teamset[right]);//swapping the elements thus bringing them to the proper side of the array w.r.t. pivot
     }
-    
-    if(ch == 3)
-    {
-        if(strcmp(teamset[right].name,teamset[l].name) > 0)
-            swap(&teamset[left],&teamset[l]);
-        else
-            swap(&teamset[right],&teamset[l]);
-    }
-    else
-        swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
+
+
+    swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
     return right;//partition index
 }
 
@@ -370,7 +395,7 @@ int main(int argc , char *argv[])//mainfunction
         return 0;
     }
 
-    struct team teamset[50];
+    struct team teamset[86];
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
     input(teamset, len);
@@ -384,6 +409,9 @@ int main(int argc , char *argv[])//mainfunction
     else if(ch2 == 2)
         quickSort(teamset, l, r, ch1);
 
+    int res = checkSort(teamset, len, ch1);
+
+    printf("sort success: %d\n",res);
     printListFile(teamset,len);
     return 0;
 }
