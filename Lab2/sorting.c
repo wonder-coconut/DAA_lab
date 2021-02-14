@@ -262,102 +262,76 @@ void mergeSort(struct team *teamset , int l , int r, int ch)//sorting two arrays
     }
 }
 
-int partition(struct team *teamset , int l , int r, struct team pivot, int ch)
+int partition(struct team *teamset , int l , int r, int ch)
 /*manipulates the array to group the elements lesser and greater than the pivot elements to the left
 and right of the pivot element respectively, and returns the position of the pivot element for further
 partitiioning and sorting*/
 {
-    int left, right;
+    int flag = 1;
+    int part = 0;
 
-    left = l+1;//since we take the first element as the pivot, we increment the left pointer by one
-    right = r;
-
-    while(left < right)
+    while(l < r)
     {
         if(ch == 1)//roll
         {
-            while(teamset[left].roll < pivot.roll)//searching for elements on the wrong side of the array w.r.t. pivot
-                left++;
-
-            while(teamset[right].roll > pivot.roll)
-                right--;
+            if(teamset[l].roll > teamset[r].roll)
+            {
+                swap(&teamset[l],&teamset[r]);
+                flag++;
+            }
         }
         else if (ch == 2)//team
         {
-            while(teamset[left].team < pivot.team)
-                left++;
-
-            while(teamset[right].team > pivot.team)
-                right--;
+            if(teamset[l].team > teamset[r].team)
+            {
+                swap(&teamset[l],&teamset[r]);
+                flag++;
+            }
         }
         else if (ch == 3)//name
         {
-            while(strcmp(teamset[left].name,pivot.name) < 0)
-                left++;
-
-            while(strcmp(teamset[right].name,pivot.name) >= 0)
-                right--;
+            if(strcmp(teamset[l].name, teamset[r].name) > 0)
+            {
+                swap(&teamset[l],&teamset[r]);
+                flag++;
+            }
         }
         else if (ch == -1)//priority field sort
         {
-            while(1)
+            if(teamset[l].team > teamset[r].team)
             {
-                if(teamset[left].team == pivot.team)
-                {
-                    if(teamset[left].roll == pivot.team)
-                    {
-                        if(strcmp(teamset[left].name,pivot.name) <= 0)
-                            left++;
-
-                        else
-                            break;                        
-                    }
-                    else if(teamset[left].roll < pivot.roll)
-                        left++;
-                    
-                    else
-                        break;
-                }
-                else if(teamset[left].team < pivot.team)
-                    left++;
-                else
-                    break;
+                swap(&teamset[l],&teamset[r]);
+                flag++;
             }
-
-            while(1)
+            else if(teamset[l].team == teamset[r].team)
             {
-                if(teamset[right].team == pivot.team)
+                if(teamset[l].roll > teamset[r].roll)
                 {
-                    if(teamset[right].roll == pivot.team)
-                    {
-                        if(strcmp(teamset[right].name,pivot.name) >= 0)
-                            right--;
-
-                        else
-                            break;                        
-                    }
-                    else if(teamset[right].roll > pivot.roll)
-                        right--;
-                    
-                    else
-                        break;
+                    swap(&teamset[l],&teamset[r]);
+                    flag++;
                 }
-                else if(teamset[right].team > pivot.team)
-                    right--;
-                else
-                    break;
+                else if(teamset[l].roll == teamset[r].roll)
+                {
+                    if(strcmp(teamset[l].name,teamset[r].name) > 0)
+                    {
+                        swap(&teamset[l],&teamset[r]);
+                        flag++;
+                    }
+                }
             }
         }
 
-        if(left >= right)
-            break;
+        if(flag % 2 == 1)
+            l++;
         else
-            swap(&teamset[left],&teamset[right]);//swapping the elements thus bringing them to the proper side of the array w.r.t. pivot
+            r--;
+
+        if(l == r)
+            part = l;
     }
 
-
-    swap(&teamset[right],&teamset[l]);//bringing the pivot element to the correct sorted position
-    return right;//partition index
+    //bringing the pivot element to the correct sorted position
+    return part;//partition index
 }
 
 void quickSort(struct team *teamset, int l , int r, int ch)//recursive algorithm to sort an array with a pivot element
@@ -366,9 +340,7 @@ void quickSort(struct team *teamset, int l , int r, int ch)//recursive algorithm
         return;
     else
     {
-        struct team pivot;
-        equate(&pivot,&teamset[l]);//first element as pivot
-        int part = partition(teamset, l , r, pivot, ch);//partition index
+        int part = partition(teamset, l , r, ch);//partition index
 
         quickSort(teamset, l, part - 1, ch);//sorting the left subarray
         quickSort(teamset, part + 1, r, ch);//sorting the right subarray
@@ -405,9 +377,17 @@ int main(int argc , char *argv[])//mainfunction
     r = len - 1;
 
     if(ch2 == 1)
+    {
+        printf("Merge sort\n");
         mergeSort(teamset, l, r, ch1);
+        printf("~~~~~~~~~~~~~~~~~~~\n");
+    }
     else if(ch2 == 2)
+    {
+        printf("Quick Sort\n");
         quickSort(teamset, l, r, ch1);
+        printf("~~~~~~~~~~~~~~~~~~~\n");
+    }
 
     int res = checkSort(teamset, len, ch1);
 
