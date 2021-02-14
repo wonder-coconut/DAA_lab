@@ -128,6 +128,7 @@ int checkSort(struct team* teamset, int len, int ch)//checking whether the array
     }
     return res;
 } 
+
 void merge(struct team *teamset , int l , int m , int r, int ch)//merge two arrays in an ascending order
 {
 
@@ -262,13 +263,10 @@ void mergeSort(struct team *teamset , int l , int r, int ch)//sorting two arrays
     }
 }
 
-int partition(struct team *teamset , int l , int r, int ch)
-/*manipulates the array to group the elements lesser and greater than the pivot elements to the left
-and right of the pivot element respectively, and returns the position of the pivot element for further
-partitiioning and sorting*/
+int partition(struct team *teamset , int l , int r, int ch)//pivotless partition algorithm, where the pivot is found at the end of the partition
 {
-    int flag = 1;
-    int part = 0;
+    int flag = 1;//variable to  act as a switch between incrementing l and decrementing r, shown better further in code
+    int part = 0;//partition index
 
     while(l < r)
     {
@@ -276,8 +274,8 @@ partitiioning and sorting*/
         {
             if(teamset[l].roll > teamset[r].roll)
             {
-                swap(&teamset[l],&teamset[r]);
-                flag++;
+                swap(&teamset[l],&teamset[r]);//every time a swap occurs, the code switches from incrementing l to decrementing r, and vice versa
+                flag++;//switching
             }
         }
         else if (ch == 2)//team
@@ -321,7 +319,7 @@ partitiioning and sorting*/
             }
         }
 
-        if(flag % 2 == 1)
+        if(flag % 2 == 1)//every increment in flag will act as a switch
             l++;
         else
             r--;
@@ -377,21 +375,14 @@ int main(int argc , char *argv[])//mainfunction
     r = len - 1;
 
     if(ch2 == 1)
-    {
-        printf("Merge sort\n");
         mergeSort(teamset, l, r, ch1);
-        printf("~~~~~~~~~~~~~~~~~~~\n");
-    }
+
     else if(ch2 == 2)
-    {
-        printf("Quick Sort\n");
         quickSort(teamset, l, r, ch1);
-        printf("~~~~~~~~~~~~~~~~~~~\n");
-    }
 
-    int res = checkSort(teamset, len, ch1);
+    //int res = checkSort(teamset, len, ch1);
 
-    printf("sort success: %d\n",res);
+    //printf("sort success: %d\n",res);
     printListFile(teamset,len);
     return 0;
 }

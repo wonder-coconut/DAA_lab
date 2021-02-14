@@ -43,8 +43,11 @@ function to equate the first team element(destination) to the second(source), ca
 void printList():
 function to print the struct array contents to the terminal. only for debugging.
 
-void printList():
+void printListFile():
 identical to the previous function, except it writes to an output file instead of the terminal.
+
+int checkSort():
+checks whether the array sorting is succesful or not. Takes field input, only for debugging.
 
 void merge():
 function two merge two arrays in a sorted fashion. The function takes in indices for the array limits, divides the array into halves, and continuously
@@ -55,19 +58,24 @@ recursive function to implement the merge sort algorithm. The function divides t
 calls the merge function to merge it into the final sorted array.
 
 int partition():
-this function divides the main array into two subarrays: the left array and the right array, with elements lesser than and greater than a specified
-pivot value, respectively. The algorithm(in simple language) chosen for the partition process is as follows:
-    -The pivot value is chosen from the first element of the array under consideration.
-    -Take two pointers from the ends of the array, excluding the pivot element. Name it left and right pointers.
-    -Iterate the left pointer through the array until it comes across an element greater than the pivot.
-    -Repeat for the right pointer, until an element lesser than the pivot is encountered.
-    -Swap these elements, to get them to the proper side of the array w.r.t. pivot.
-    -Repeat the previous steps until the left pointer is equal or greater than the right pointer.
-    -Swap the pivot element to the partition point, thus making it the permanenet sorted position of the pivot element.
-after swapping, this function returns the partition element, so that the quickSort function can divide the array and recursively sort it.
+initially this method was implemented with the left, right pointer with a pivot element algorithm, which was explained in class. Unfortunately, due
+to either an error in my implementation, or the algorithm in general, the code failed to sort for Name fields.
+I ended up using an alternate partition algorithm, without an initial pivot, explained below:
+    -assign left and right pointers to the array under consideration
+    -the increment of the left and right pointers are switched everytime a swap occurs. For example:
+    assume left pointer is incrementing first. If swap occurs between left and right pointers, switch from increment of left pointer to decrementing right
+    pointer, and vice versa. This switch will occur everytime a swap occurs.
+    -compare the elements at the left and right pointers
+    -if left is greater than right, swap. Then switch the pointer increment/decrementing
+    -finally, increment/decrement the left/right pointers, depending on current state of array.
+    -repeat the steps until the left and right pointers are equal to each other.
+    -return the left/right pointer value as the partition variable. By theory, the element at the pointer becomes the pivot.
+
+The switch is implemented by using a flag variable which is incremented everytime a swap occurs. The modulus of this variable with 2 gives us a
+binary output of 0 or 1, which respectively decides which pointer variable to alter.
 
 void quickSort():
-function to implement quickSort algorithm. The function gets the partition index from the partition() function, divides the array into it's respectively
+function to implement quickSort algorithm. The function gets the partition index from the partition() function, divides the array into its respective
 subarrays and recursively sorts(calls quickSort) the two subarrays.
 
 void main():
