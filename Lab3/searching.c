@@ -22,7 +22,7 @@ int rollConvert(char roll[50]) //function to convert a string roll number to a u
     return result;
 }
 
-void input(struct team *teamset, int len)//function to input data into struct array from file, for convenience
+void input(int len)//function to input data into struct array from file, for convenience
 {
     FILE *fileInput;
     fileInput = fopen("DAALab_Input1.txt","r");
@@ -68,7 +68,7 @@ void equate(struct team *a,struct team *b)//equates two team structs
     a->team = b->team;
 }
 
-void printList(struct team *teamset, int len) //printing all elements, for convenience
+void printList(int len) //printing all elements, for convenience
 {
     int i=0;
     while(i<len)
@@ -78,7 +78,7 @@ void printList(struct team *teamset, int len) //printing all elements, for conve
     }
 }
 
-void printListFile(struct team * teamset, int len)//writing the list to the file
+void printListFile(int len)//writing the list to the file
 {
     FILE *fileOutput;
     fileOutput = fopen("DAALab_Output1.txt","w");
@@ -98,24 +98,64 @@ void printListFile(struct team * teamset, int len)//writing the list to the file
     
 }
 
+void appendElementFile(struct team teamset)
+{
+    FILE *fileOutput;
+    fileOutput = fopen("DAALab_Output1.txt","a");
+    char format[10];
+    int i = 0;
+    if(teamset.roll<10)
+        strcpy(format,"19XJ1A050");//reformatting the roll number, as only the last two digits are sliced into the struct variable
+    else
+        strcpy(format,"19XJ1A05");
+    
+    fprintf(fileOutput,"%s%d %s %d\n",format,teamset.roll,teamset.name,teamset.team);
+    fclose(fileOutput);
+}
+
 int linearSearch(int ch, char search[20], int len)
 {
     int numSearch = 0;
     int res = 0;
+
     if(ch == 1 || ch == 2)
     {
         numSearch = atoi(search);
         if(numSearch == 0 && search[0] != '0')
         {
-            printf("invalid input");
-            return -1;
+            printf("invalid input\n");
+            return 0;
         }
     }
 
     for(int i = 0; i<len ; i++)
     {
-        if(ch )
+        if(ch == 1)
+        {
+            if(teamset[i].roll == numSearch)
+            {
+                appendElementFile(teamset[i]);
+                res = 1;
+            }
+        }
+        else if(ch == 2)
+        {
+            if(teamset[i].team == numSearch)
+            {
+                appendElementFile(teamset[i]);
+                res = 1;
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(teamset[i].name,search) == 0)
+            {
+                appendElementFile(teamset[i]);
+                res = 1;
+            }
+        }
     }
+    return res;
 }
 
 int main(int argc , char *argv[])//mainfunction
@@ -143,16 +183,9 @@ int main(int argc , char *argv[])//mainfunction
 
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
-    input(teamset, len);
-    //int res = 0;
-    printf("%d %d %s\n",ch1,ch2,search);
-    /*if(ch2 == 1)
-        //linearSearch(ch1,search, len);
+    input(len);
 
-    else if(ch2 == 2)
-        //binarySearch(ch1,search);
-
-    else if(ch2 == 3)
-        //fibonacciSearch(ch1,search);*/
+    int res = linearSearch(ch1,search,len);
+    printf("%d\n",res);
     return 0;
 }
