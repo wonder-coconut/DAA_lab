@@ -113,6 +113,139 @@ void appendElementFile(struct team teamset)
     fclose(fileOutput);
 }
 
+void merge(int l , int m , int r, int ch)//merge two arrays in an ascending order
+{
+    int lenl = m - l + 1;
+    int lenr = r - m;//length of the two arrays to be merged
+    
+    struct team L[lenl];
+    struct team R[lenr];
+
+    int i,j,k;//indices for left array, right array, and main array respectively
+    i = j = k = 0;
+    
+    for(i = 0 ; i < lenl ; i++)//dividing array into two subarrays
+        equate(&L[i],&teamset[l+i]);
+
+    for(i = 0 ; i < lenr ; i++)
+        equate(&R[i],&teamset[m+i+1]);
+
+    i = j = 0;
+    k = l;
+
+
+    while( i < lenl && j < lenr)
+    {
+        if(ch == 1)//rollnumber
+        {
+            if(L[i].roll < R[j].roll)//adding the smallest of the two array elements continuously
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
+        else if(ch == 2)//team number
+        {
+            if(L[i].team < R[j].team)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
+        else if(ch == 3)//name sort
+        {
+            if(strcmp(L[i].name,R[j].name) < 0)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
+        else if(ch == -1)//priority sort, engages next priority field when encountering a case of equality
+        {
+            if(L[i].team < R[j].team)
+            {
+                equate(&teamset[k],&L[i]);
+                i++;
+            }
+            else if(L[i].team == R[j].team)
+            {
+                if(L[i].roll < R[j].roll)
+                {
+                    equate(&teamset[k],&L[i]);
+                    i++;
+                }
+                else if(L[i].team == R[j].team)
+                {
+                    if(strcmp(L[i].name,R[j].name) < 0)
+                    {
+                        equate(&teamset[k],&L[i]);
+                        i++;
+                    }
+                    else
+                    {
+                        equate(&teamset[k],&R[j]);
+                        j++;
+                    }
+                }
+                else
+                {
+                    equate(&teamset[k],&R[j]);
+                    j++;
+                }          
+            }
+            else
+            {
+                equate(&teamset[k],&R[j]);
+                j++;
+            }
+        }
+        k++;
+    }
+
+    while(i < lenl)//adding remaining elements, if any (this occurs because lenl might not be equal to lenr)
+    {
+        equate(&teamset[k],&L[i]);
+        k++;
+        i++;
+    }
+    
+    while(j < lenr)
+    {
+        equate(&teamset[k],&R[j]);
+        k++;
+        j++;
+    }
+
+}
+
+void mergeSort(int l , int r, int ch)//sorting two arrays using recursive algorithms
+{
+    if(l < r)
+    {
+        int m = (l + r)/2;//midpoint for division of subarrays
+
+        mergeSort(l , m, ch);//sorting left subarray
+        mergeSort(m + 1 , r, ch);//sorting right subarray
+
+        merge(l , m , r, ch);//merging the two subarrays
+    }
+}
+
 int linearSearch(int ch, char search[20], int len)
 {
     int numSearch = 0;
@@ -158,6 +291,12 @@ int linearSearch(int ch, char search[20], int len)
     return res;
 }
 
+int binarySearch(int ch , char search[] , int len)
+{
+    mergeSort(0, len - 1, ch);
+    printListFile(len);
+}
+
 int main(int argc , char *argv[])//mainfunction
 {
     int ch1 = 0;
@@ -183,9 +322,9 @@ int main(int argc , char *argv[])//mainfunction
 
     int len = sizeof(teamset)/sizeof(teamset[0]);
 
+    int res = 0;
     input(len);
-
-    int res = linearSearch(ch1,search,len);
+    res = binarySearch(ch1 , search , len);
     printf("%d\n",res);
     return 0;
 }
