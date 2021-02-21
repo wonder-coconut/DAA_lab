@@ -302,7 +302,7 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         {
             if(teamset[i].roll != numSearch)
             {
-                printf("%d %d \n",teamset[i].roll,numSearch);
+                //printf("%d %d \n",teamset[i].roll,numSearch);
                 break;
             }
             else
@@ -315,11 +315,12 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         {
             if(teamset[i].team != numSearch)
             {
-                printf("%d %d \n",teamset[i].team,numSearch);
+                printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 break;
             }
             else
             {
+                printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 appendElementFile(teamset[i]);
                 i++;
             }
@@ -352,10 +353,14 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         }        
         else if(ch == 2)
         {
-            if(teamset[i].roll != numSearch)
+            if(teamset[i].team != numSearch)
+            {
+                //printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 break;
+            }
             else
             {
+                //printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 appendElementFile(teamset[i]);
                 i--;
             }
@@ -504,7 +509,7 @@ int fibIndex(int n)
 
 int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
 {
-    printf("%d\t%d\t%d\n",l , r, fibIndex(r-l+1));
+    //printf("%d\t%d\t%d\n",l , r, fibIndex(r-l+1));
     if(l > r)
         return 0;
     else
@@ -514,7 +519,11 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
         if(ch == 1)
         {
             if(teamset[m].roll == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                duplicateElement(ch, m, numSearch, NULL);
                 return 1;
+            }
             else
             {
                 if(numSearch < teamset[m].roll)
@@ -527,7 +536,11 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
         else if(ch == 2)
         {
             if(teamset[m].team == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                duplicateElement(ch, m, numSearch, NULL);
                 return 1;
+            }
             else
             {
                 if(numSearch < teamset[m].team)
@@ -540,7 +553,11 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
         else if(ch == 3)
         {
             if(strcmp(teamset[m].name,search) == 0)
+            {
+                appendElementFile(teamset[m]);
+                duplicateElement(ch, m, 0, search);
                 return 1;
+            }
             else
             {
                 if(strcmp(search, teamset[m].name) < 0)
@@ -569,7 +586,7 @@ int fibonacciDriver(int ch , char search[20], int len)
             return 0;
         }
     }
-    res = fibSearch(0 , len - 1, ch , NULL , numSearch);
+    res = fibSearch(0 , len - 1, ch , search , numSearch);
     return res;
     
 }

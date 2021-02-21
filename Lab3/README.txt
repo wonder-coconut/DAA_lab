@@ -1,0 +1,1 @@
+https://mathlesstraveled.com/2016/03/19/golden-numbers-are-fibonacci/
