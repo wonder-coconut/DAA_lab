@@ -291,10 +291,134 @@ int linearSearch(int ch, char search[20], int len)
     return res;
 }
 
-int binarySearch(int ch , char search[] , int len)
+int binarySearchI(int l , int r, int ch , int numSearch)
+{
+    int m = l - (l-r)/2;
+    
+    if(m == l || m == r)//base case
+    {
+        if(ch == 1)
+        {
+            if(teamset[m].roll == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else if(ch == 2)
+        {
+            if(teamset[m].team == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+    else
+    {
+        if(ch == 1)
+        {
+            if(teamset[m].roll == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                return 1;
+            }
+            else
+            {
+                if(numSearch > teamset[m].roll)
+                    l = m + 1;
+
+                else
+                    r = m - 1;
+                
+                binarySearchI(l , r, ch , numSearch);
+            }            
+        }
+        else if(ch == 2)
+        {
+            if(teamset[m].team == numSearch)
+            {
+                appendElementFile(teamset[m]);
+                return 1;
+            }
+            else
+            {
+                if(numSearch > teamset[m].team)
+                    l = m + 1;
+
+                else
+                    r = m - 1;
+                
+                binarySearchI(l , r, ch , numSearch);
+            }    
+        }
+    }
+}
+
+int binarySearchS(int l , int r, char search[20])
+{
+    int m = l - (l-r)/2;
+    
+    if(m == l || m == r)//base case
+    {
+        if(strcmp(teamset[m].name,search) == 0)
+        {
+            appendElementFile(teamset[m]);
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        if(strcmp(teamset[m].name,search) == 0)
+        {
+            appendElementFile(teamset[m]);
+            return 1;
+        }
+        else
+        {
+            if(strcmp(teamset[m].name,search) < 0)
+                l = m + 1;
+            else
+                r = m - 1;
+        
+        binarySearchS(l, r, search);
+        }
+    }
+}
+int binaryDriver(int ch , char search[20] , int len)
 {
     mergeSort(0, len - 1, ch);
-    printListFile(len);
+
+    int numSearch = 0;
+    int res = 0;
+
+    if(ch == 1 || ch == 2)
+    {
+        numSearch = atoi(search);
+        if(numSearch == 0 && search[0] != '0')
+        {
+            printf("invalid input\n");
+            return 0;
+        }
+    }
+
+    if(ch == 1 || ch == 2)
+        res = binarySearchI(0 , len - 1, ch , numSearch);
+    else
+        res = binarySearchS(0, len - 1 , search);
+    return res;
 }
 
 int main(int argc , char *argv[])//mainfunction
@@ -324,7 +448,7 @@ int main(int argc , char *argv[])//mainfunction
 
     int res = 0;
     input(len);
-    res = binarySearch(ch1 , search , len);
+    res = binaryDriver(ch1 , search , len);
     printf("%d\n",res);
     return 0;
 }
