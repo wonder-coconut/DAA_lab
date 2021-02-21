@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 struct team //structure to implement each element of the list
 {
@@ -450,6 +451,7 @@ int binarySearchS(int l , int r, char search[20])
         }
     }
 }
+
 int binaryDriver(int ch , char search[20] , int len)
 {
     mergeSort(0, len - 1, ch);
@@ -474,7 +476,82 @@ int binaryDriver(int ch , char search[20] , int len)
     return res;
 }
 
+int isPerfectSquare(int n)
+{
+    int root = sqrt(n);
+    return (root*root == n);
+}
 
+int isFibonacci(int n)
+{
+    return (isPerfectSquare(5*n*n + 4) || isPerfectSquare(5*n*n - 4));
+}
+
+int fibIndex(int n)
+{
+    while(1)
+    {
+        if(isFibonacci(n))
+            break;
+        n++;
+    }
+
+    double invgoldenratio = 1/(0.5 * (1 + sqrt(5)));
+    double res = invgoldenratio * invgoldenratio * n;
+    int result = (int)round(res);
+    return result;
+}
+
+int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
+{
+    printf("%d\t%d\t%d\n",l , r, fibIndex(r-l+1));
+    if(l > r)
+        return 0;
+    else
+    {
+        int m = fibIndex(r - l + 1) + l;
+
+        if(ch == 1)
+        {
+            if(teamset[m].roll == numSearch)
+                return 1;
+            else
+            {
+                if(numSearch < teamset[m].roll)
+                    r = m - 1;
+                else
+                    l = m + 1;
+                fibSearch(l , r, ch , NULL, numSearch);
+            }
+        }
+        else if(ch == 2)
+        {
+            if(teamset[m].team == numSearch)
+                return 1;
+            else
+            {
+                if(numSearch < teamset[m].team)
+                    r = m - 1;
+                else
+                    l = m + 1;
+                fibSearch(l , r, ch , NULL, numSearch);
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(teamset[m].name,search) == 0)
+                return 1;
+            else
+            {
+                if(strcmp(search, teamset[m].name) < 0)
+                    r = m - 1;
+                else
+                    l = m + 1;
+                fibSearch(l , r , ch , search, 0);
+            }
+        }
+    }
+}
 
 int fibonacciDriver(int ch , char search[20], int len)
 {
@@ -492,11 +569,7 @@ int fibonacciDriver(int ch , char search[20], int len)
             return 0;
         }
     }
-
-    if(ch == 1 || ch == 2)
-        res = fibSearchI(0 , len - 1, ch , numSearch);
-    else
-        res = fibSearchS(0, len - 1 , search);
+    res = fibSearch(0 , len - 1, ch , NULL , numSearch);
     return res;
     
 }

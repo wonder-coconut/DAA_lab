@@ -33,7 +33,7 @@ int fibSearch(int l , int r, int search)
         return 0;
     else
     {
-        int m = fibIndex(r - l + 1);
+        int m = fibIndex(r - l + 1) + l;
         if(arr[m] == search)
             return 1;
         else
