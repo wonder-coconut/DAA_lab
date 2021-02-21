@@ -20,7 +20,9 @@ algorithm parameters:
 
 As a whole, this program takes an input from the file "DAALab_Input1.txt", takes in user input from the user for choice of field and algorithm,
 and writes the output into the file "DAALab_Output1.txt". Note: the code is implemented in a manner where the input file must be in the same directory
-as the source code, as the address specified points to the same directory. 
+as the source code, as the address specified points to the same directory. Furthermore, since the program appends to a file instead of writing from 
+scratch, the output file will have to be wiped/deleted for a fresh new output, or the next output will just be appeneded to the first output.
+ 
 The program employs use of various functions and structures, as explained below:
 (further precise working is explained by comments in source code)
 
