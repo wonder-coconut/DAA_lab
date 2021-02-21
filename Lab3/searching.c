@@ -79,27 +79,7 @@ void printList(int len) //printing all elements, for convenience
     }
 }
 
-void printListFile(int len)//writing the list to the file
-{
-    FILE *fileOutput;
-    fileOutput = fopen("DAALab_Output1.txt","w");
-    char format[10];
-    int i = 0;
-    while(i<len)
-    {
-        if(teamset[i].roll<10)
-            strcpy(format,"19XJ1A050");//reformatting the roll number, as only the last two digits are sliced into the struct variable
-        else
-            strcpy(format,"19XJ1A05");
-        
-        fprintf(fileOutput,"%s%d %s %d\n",format,teamset[i].roll,teamset[i].name,teamset[i].team);
-        i++;
-    }
-    fclose(fileOutput);
-    
-}
-
-void appendElementFile(struct team teamset)
+void appendElementFile(struct team teamset)//function to append the element to a file
 {
     FILE *fileOutput;
     fileOutput = fopen("DAALab_Output1.txt","a");
@@ -247,12 +227,12 @@ void mergeSort(int l , int r, int ch)//sorting two arrays using recursive algori
     }
 }
 
-int linearSearch(int ch, char search[20], int len)
+int linearSearch(int ch, char search[20], int len)//function to implement linear search
 {
     int numSearch = 0;
     int res = 0;
 
-    if(ch == 1 || ch == 2)
+    if(ch == 1 || ch == 2)//numeric inputs
     {
         numSearch = atoi(search);
         if(numSearch == 0 && search[0] != '0')
@@ -264,7 +244,7 @@ int linearSearch(int ch, char search[20], int len)
 
     for(int i = 0; i<len ; i++)
     {
-        if(ch == 1)
+        if(ch == 1)//roll
         {
             if(teamset[i].roll == numSearch)
             {
@@ -272,7 +252,7 @@ int linearSearch(int ch, char search[20], int len)
                 res = 1;
             }
         }
-        else if(ch == 2)
+        else if(ch == 2)//team
         {
             if(teamset[i].team == numSearch)
             {
@@ -280,7 +260,7 @@ int linearSearch(int ch, char search[20], int len)
                 res = 1;
             }
         }
-        else if(ch == 3)
+        else if(ch == 3)//name
         {
             if(strcmp(teamset[i].name,search) == 0)
             {
@@ -292,7 +272,7 @@ int linearSearch(int ch, char search[20], int len)
     return res;
 }
 
-void duplicateElement(int ch, int index, int numSearch, char search[20])
+void duplicateElement(int ch, int index, int numSearch, char search[20])//to print duplicate elements in binary and fibonacci search
 {
     int i = index + 1;
 
@@ -300,7 +280,7 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
     {
         if(ch == 1)
         {
-            if(teamset[i].roll != numSearch)
+            if(teamset[i].roll != numSearch)//base case (non duplicate elements)
                 break;
             else
             {
@@ -348,12 +328,10 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         {
             if(teamset[i].team != numSearch)
             {
-                //printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 break;
             }
             else
             {
-                //printf("%d %d\t%d %d\n",teamset[i].team,numSearch,i,index);
                 appendElementFile(teamset[i]);
                 i--;
             }
@@ -371,17 +349,17 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
     }
 }
 
-int binarySearchI(int l , int r, int ch , int numSearch)
+int binarySearch(int l , int r, int ch , char search[20] , int numSearch)//implementing binary search
 {
-    int m = l - (l-r)/2;
+    int m = l - (l-r)/2;//split array into halves
         
-    if(m < l || m > r)//base case
+    if(l > r)//base case
     {
         return 0;
     }
     else
     {
-        if(ch == 1)
+        if(ch == 1)//roll
         {
             if(teamset[m].roll == numSearch)
             {
@@ -391,16 +369,16 @@ int binarySearchI(int l , int r, int ch , int numSearch)
             }
             else
             {
-                if(numSearch > teamset[m].roll)
+                if(numSearch > teamset[m].roll)//left right limit updation according to relative position of search element
                     l = m + 1;
 
                 else
                     r = m - 1;
                 
-                binarySearchI(l , r, ch , numSearch);
+                binarySearch(l , r, ch ,NULL, numSearch);//recursive search
             }            
         }
-        else if(ch == 2)
+        else if(ch == 2)//team
         {
             if(teamset[m].team == numSearch)
             {
@@ -416,48 +394,37 @@ int binarySearchI(int l , int r, int ch , int numSearch)
                 else
                     r = m - 1;
                 
-                binarySearchI(l , r, ch , numSearch);
+                binarySearch(l , r, ch , NULL, numSearch);
             }    
         }
-    }
-}
-
-int binarySearchS(int l , int r, char search[20])
-{
-    int m = l - (l-r)/2;
-    
-    if(m < l || m > r)//base case
-    {
-        return 0;
-    }
-    else
-    {
-        if(strcmp(teamset[m].name,search) == 0)
+        else if(ch == 3)//name
         {
-            appendElementFile(teamset[m]);
-            duplicateElement(3, m, 0, search);
-            return 1;
-        }
-        else
-        {
-            if(strcmp(teamset[m].name,search) < 0)
-                l = m + 1;
+            if(strcmp(teamset[m].name,search) == 0)
+            {
+                appendElementFile(teamset[m]);
+                duplicateElement(ch, m, 0, search);
+                return 1;
+            }
             else
-                r = m - 1;
-        
-        binarySearchS(l, r, search);
+            {
+                if(strcmp(search, teamset[m].name) < 0)
+                    r = m - 1;
+                else
+                    l = m + 1;
+                binarySearch(l , r , ch , search, 0);
+            }
         }
     }
 }
 
-int binaryDriver(int ch , char search[20] , int len)
+int binaryDriver(int ch , char search[20] , int len)//driver function for binary search
 {
-    mergeSort(0, len - 1, ch);
+    mergeSort(0, len - 1, ch);//sort
 
     int numSearch = 0;
     int res = 0;
 
-    if(ch == 1 || ch == 2)
+    if(ch == 1 || ch == 2)//numeric input
     {
         numSearch = atoi(search);
         if(numSearch == 0 && search[0] != '0')
@@ -466,50 +433,45 @@ int binaryDriver(int ch , char search[20] , int len)
             return 0;
         }
     }
-
-    if(ch == 1 || ch == 2)
-        res = binarySearchI(0 , len - 1, ch , numSearch);
-    else
-        res = binarySearchS(0, len - 1 , search);
+    res = binarySearch(0, len - 1 , ch , search, numSearch);
     return res;
 }
 
-int isPerfectSquare(int n)
+int isPerfectSquare(int n)//checking for perfect square
 {
     int root = sqrt(n);
     return (root*root == n);
 }
 
-int isFibonacci(int n)
+int isFibonacci(int n)//checking for fibonacci number
 {
     return (isPerfectSquare(5*n*n + 4) || isPerfectSquare(5*n*n - 4));
 }
 
-int fibIndex(int n)
+int fibIndex(int n)//returns the index for division of array
 {
     while(1)
     {
-        if(isFibonacci(n))
+        if(isFibonacci(n))//smallest fibonacci number larger than length n
             break;
         n++;
     }
 
-    double invgoldenratio = 1/(0.5 * (1 + sqrt(5)));
-    double res = invgoldenratio * invgoldenratio * n;
-    int result = (int)round(res);
+    double invgoldenratio = 1/(0.5 * (1 + sqrt(5)));//golden ratio value
+    double res = invgoldenratio * invgoldenratio * n;//approximate value of fibonacci number two positions behind n
+    int result = (int)round(res);//rounded to nearest integer for exact value
     return result;
 }
 
-int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
+int fibSearch(int l , int r, int ch, char search[20] , int numSearch)//implementation of fibonacci search
 {
-    //printf("%d\t%d\t%d\n",l , r, fibIndex(r-l+1));
-    if(l > r)
+    if(l > r)//base case
         return 0;
     else
     {
-        int m = fibIndex(r - l + 1) + l;
+        int m = fibIndex(r - l + 1) + l;//second largest fibonacci number smaller than length
 
-        if(ch == 1)
+        if(ch == 1)//roll
         {
             if(teamset[m].roll == numSearch)
             {
@@ -520,13 +482,13 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
             else
             {
                 if(numSearch < teamset[m].roll)
-                    r = m - 1;
+                    r = m - 1;//left right limit updation according to relative position of search element
                 else
                     l = m + 1;
-                fibSearch(l , r, ch , NULL, numSearch);
+                fibSearch(l , r, ch , NULL, numSearch);//recursive search
             }
         }
-        else if(ch == 2)
+        else if(ch == 2)//team
         {
             if(teamset[m].team == numSearch)
             {
@@ -543,7 +505,7 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
                 fibSearch(l , r, ch , NULL, numSearch);
             }
         }
-        else if(ch == 3)
+        else if(ch == 3)//name
         {
             if(strcmp(teamset[m].name,search) == 0)
             {
@@ -563,23 +525,23 @@ int fibSearch(int l , int r, int ch, char search[20] , int numSearch)
     }
 }
 
-int fibonacciDriver(int ch , char search[20], int len)
+int fibonacciDriver(int ch , char search[20], int len)//driver function for fibonacci search
 {
-    mergeSort(0, len - 1, ch);
+    mergeSort(0, len - 1, ch);//sort
 
     int numSearch = 0;
     int res = 0;
 
-    if(ch == 1 || ch == 2)
+    if(ch == 1 || ch == 2)//numeric searches
     {
         numSearch = atoi(search);
-        if(numSearch == 0 && search[0] != '0')
+        if(numSearch == 0 && search[0] != '0')//checking for numeric input
         {
             printf("invalid input\n");
             return 0;
         }
     }
-    res = fibSearch(0 , len - 1, ch , search , numSearch);
+    res = fibSearch(0 , len - 1, ch , search , numSearch);//fibonacci search
     return res;
     
 }
@@ -619,6 +581,9 @@ int main(int argc , char *argv[])//mainfunction
     if(ch2 == 3)
         res = fibonacciDriver(ch1 , search , len);
 
-    printf("%d\n",res);
+    if(res)
+        printf("Element(s) found\n");
+    else
+        printf("Element not found\n");
     return 0;
 }
