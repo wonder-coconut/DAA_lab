@@ -300,7 +300,10 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         if(ch == 1)
         {
             if(teamset[i].roll != numSearch)
+            {
+                printf("%d %d \n",teamset[i].roll,numSearch);
                 break;
+            }
             else
             {
                 appendElementFile(teamset[i]);
@@ -309,8 +312,11 @@ void duplicateElement(int ch, int index, int numSearch, char search[20])
         }        
         else if(ch == 2)
         {
-            if(teamset[i].roll != numSearch)
+            if(teamset[i].team != numSearch)
+            {
+                printf("%d %d \n",teamset[i].team,numSearch);
                 break;
+            }
             else
             {
                 appendElementFile(teamset[i]);
