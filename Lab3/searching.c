@@ -474,10 +474,37 @@ int binaryDriver(int ch , char search[20] , int len)
     return res;
 }
 
+
+
+int fibonacciDriver(int ch , char search[20], int len)
+{
+    mergeSort(0, len - 1, ch);
+
+    int numSearch = 0;
+    int res = 0;
+
+    if(ch == 1 || ch == 2)
+    {
+        numSearch = atoi(search);
+        if(numSearch == 0 && search[0] != '0')
+        {
+            printf("invalid input\n");
+            return 0;
+        }
+    }
+
+    if(ch == 1 || ch == 2)
+        res = fibSearchI(0 , len - 1, ch , numSearch);
+    else
+        res = fibSearchS(0, len - 1 , search);
+    return res;
+    
+}
+
 int main(int argc , char *argv[])//mainfunction
 {
-    int ch1 = 0;
-    int ch2 = 0;
+    int ch1 = 0; // choice of field
+    int ch2 = 0; // choice of algorithm
     char search[20];
 
     //sanity checks for user input:
@@ -501,7 +528,14 @@ int main(int argc , char *argv[])//mainfunction
 
     int res = 0;
     input(len);
-    res = binaryDriver(ch1 , search , len);
+
+    if(ch2 == 1)
+        res = linearSearch(ch1 , search , len);
+    if(ch2 == 2)
+        res = binaryDriver(ch1 , search , len);
+    if(ch2 == 3)
+        res = fibonacciDriver(ch1 , search , len);
+
     printf("%d\n",res);
     return 0;
 }
