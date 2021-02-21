@@ -291,10 +291,85 @@ int linearSearch(int ch, char search[20], int len)
     return res;
 }
 
+void duplicateElement(int ch, int index, int numSearch, char search[20])
+{
+    int i = index + 1;
+
+    while(1)//right
+    {
+        if(ch == 1)
+        {
+            if(teamset[i].roll != numSearch)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i++;
+            }
+        }        
+        else if(ch == 2)
+        {
+            if(teamset[i].roll != numSearch)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i++;
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(teamset[i].name,search) != 0)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i++;                
+            }
+        }
+    }
+
+    i = index - 1;
+
+    while(1)//left
+    {
+        if(ch == 1)
+        {
+            if(teamset[i].roll != numSearch)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i--;
+            }
+        }        
+        else if(ch == 2)
+        {
+            if(teamset[i].roll != numSearch)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i--;
+            }
+        }
+        else if(ch == 3)
+        {
+            if(strcmp(teamset[i].name,search) != 0)
+                break;
+            else
+            {
+                appendElementFile(teamset[i]);
+                i--;                
+            }
+        }
+    }
+}
+
 int binarySearchI(int l , int r, int ch , int numSearch)
 {
     int m = l - (l-r)/2;
-    
+        
     if(m < l || m > r)//base case
     {
         return 0;
@@ -306,6 +381,7 @@ int binarySearchI(int l , int r, int ch , int numSearch)
             if(teamset[m].roll == numSearch)
             {
                 appendElementFile(teamset[m]);
+                duplicateElement(ch, m, numSearch,NULL);
                 return 1;
             }
             else
@@ -324,6 +400,7 @@ int binarySearchI(int l , int r, int ch , int numSearch)
             if(teamset[m].team == numSearch)
             {
                 appendElementFile(teamset[m]);
+                duplicateElement(ch, m, numSearch,NULL);
                 return 1;
             }
             else
@@ -353,6 +430,7 @@ int binarySearchS(int l , int r, char search[20])
         if(strcmp(teamset[m].name,search) == 0)
         {
             appendElementFile(teamset[m]);
+            duplicateElement(3, m, 0, search);
             return 1;
         }
         else
