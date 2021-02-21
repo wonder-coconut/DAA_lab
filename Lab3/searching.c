@@ -295,32 +295,9 @@ int binarySearchI(int l , int r, int ch , int numSearch)
 {
     int m = l - (l-r)/2;
     
-    if(m == l || m == r)//base case
+    if(m < l || m > r)//base case
     {
-        if(ch == 1)
-        {
-            if(teamset[m].roll == numSearch)
-            {
-                appendElementFile(teamset[m]);
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else if(ch == 2)
-        {
-            if(teamset[m].team == numSearch)
-            {
-                appendElementFile(teamset[m]);
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        return 0;
     }
     else
     {
@@ -367,17 +344,9 @@ int binarySearchS(int l , int r, char search[20])
 {
     int m = l - (l-r)/2;
     
-    if(m == l || m == r)//base case
+    if(m < l || m > r)//base case
     {
-        if(strcmp(teamset[m].name,search) == 0)
-        {
-            appendElementFile(teamset[m]);
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        return 0;
     }
     else
     {
