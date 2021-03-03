@@ -3,46 +3,56 @@
 #include <sys/time.h>
 #include <math.h>
 
-int initialize(int *arr, int l , int u)
+int initialize(int *arr, int l , int u, int len)
 {
-    for(int i = 0; i < 1024; i++)
+    for(int i = 0; i < len; i++)
     {
-        for(int j = 0; j < 1024; j++)
+        for(int j = 0; j < len; j++)
         {
-            arr[i*1024 + j] = rand()%(u - l + 1) + l;
+            arr[i*len + j] = rand()%(u - l + 1) + l;
         }
     }
 }
 
-void printArray(int *arr)
+void printArray(int *arr, int len)
 {
-    for(int i = 0; i < 1024; i++)
+    for(int i = 0; i < len; i++)
     {
-        for(int j = 0; j < 1024; j++)
+        for(int j = 0; j < len; j++)
         {
-            printf("%d\t",arr[i*1024 + j]);
+            printf("%d\t",arr[i*len + j]);
         }
         printf("\n");
     }
 }
 
+
+
 int main()
 {
     struct timeval current_time;
+
     gettimeofday(&current_time, NULL);
     double baseTime = current_time.tv_sec + pow(10,-6)*current_time.tv_usec;
     double currentTime = 0;
+
+    int len = 5; 
+    int *A = (int *)malloc(sizeof(int)*len*len);
+    int *B = (int *)malloc(sizeof(int)*len*len);
+    int *C = (int *)malloc(sizeof(int)*len*len);
+
+    initialize(A,0,21,len);
+    initialize(B,0,21,len);
+    initialize(C,0,0,len);
     
-    int *arr = (int *)malloc(sizeof(int)*1024*1024);
-    initialize(arr,0,21);
-    //printArray(arr);
+    
 
     gettimeofday(&current_time, NULL);
     currentTime = current_time.tv_sec + pow(10,-6)*current_time.tv_usec;
     printf("Time for initialization : %lf\n",(currentTime - baseTime));
 
-    
 
-    free(arr);
+    free(A);
+    free(B);
     return 0;
 }
