@@ -2,6 +2,11 @@ RISHAB RAMANATHAN
 ROLL:   19XJ1A0558
 TEAM:   46
 
+
+The folder is divided into two programs, one for tree sort and the other for block matrix multiplication.
+
+1) Tree sort
+
 Compilation: gcc treeSort.c -o ts
 
 Input parameters: ./ts {omit the < ./ > on cmd}
@@ -52,3 +57,40 @@ identical to previous function, except it writes to the output file instead of p
 void main():
 driver function for the program.
 
+2) Block Matrix multiplication
+
+Compilation: gcc blockMulti.c -o bm
+
+Execution: ./bm <block length> {omit the < ./ > on cmd}
+
+This program attempts to multiply two 1024 * 1024 matrices, and prints the runtime for it. Output is not written to any file, but the runtime has been
+analyzed and plotted in the same root folder.
+
+Given below are the function and members uses applied in the script:
+
+int len, int bl:
+global variables used to store the value of the length and block length dimensions of the matrix
+
+int initialize():
+function to initialize the parameter array elements. The function assigns a pseudo-random value to each element, the random value being within a specified
+range in the function parameter.
+
+void blockMultiplier():
+function to implement block matrix multiplication for the input matrices.
+The function achieves this by dividing the iteration in two parts:
+-block iteration
+-element iteration within the block
+
+The outer three loops are used to iterate through the blocks of the matrix, this is achieved by incrementing each index by the block length.
+The inner three loops are used to iterate through the elements within the current block.
+The i and j indices represent the coordinates of the element/block in the final result matrix, into which the multiplication result is assigned.
+The k index serves as an iterator to parse throught the rows/columns of the first and the second matrix respectively.
+
+void printArray():
+function to print each element of the input matrix. Only for utility, not used for final output, highly complex for larger matrices.
+
+int main():
+driver function for the script.
+significant aspects:
+-the matrix had to be dynamically initialized due to the large size of elements required, using malloc()
+-gettimeofday() function was used to log the runtime of various aspects of the program.
