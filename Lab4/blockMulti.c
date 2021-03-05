@@ -88,6 +88,10 @@ int main(int argc, char *argv[])//driver
     currentTime = current_time.tv_sec + pow(10,-6)*current_time.tv_usec;
     printf("Time for block multiplication for size %d : %lf\n",bl,(currentTime - baseTime));//multiplication runtime
 
+    FILE *fileOut;
+    fileOut = fopen("TimeLog.txt","a");
+    fprintf(fileOut,"Time for block multiplication for size %d : %lf\n",bl,(currentTime - baseTime));
+
     free(A);
     free(B);
     
