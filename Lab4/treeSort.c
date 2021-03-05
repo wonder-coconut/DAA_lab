@@ -9,7 +9,7 @@ struct team //structure to implement each element of the list
     int team;
 };
 
-struct node
+struct node //structure to represent each node of the BST
 {
     struct team data;
     struct node* left;
@@ -71,7 +71,7 @@ void appendElementFile(struct team teamset)//function to append the element to a
     fclose(fileOutput);
 }
 
-struct node* newNode(struct team teamset)
+struct node* newNode(struct team teamset)//creates new node and returns the address
 {
     struct node *temp;
     temp = (struct node*)malloc(sizeof(struct node));
@@ -81,26 +81,26 @@ struct node* newNode(struct team teamset)
     return temp;
 }
 
-void insert(struct node **root, struct team teamset)
+void insert(struct node **root, struct team teamset)//inserts a new node following the BST structure
 {
-    if(*root == NULL)
+    if(*root == NULL)//leaf node reached
     {
         *root = newNode(teamset);
     }
     else
     {
-        if(teamset.roll >= (*root)->data.roll)
+        if(teamset.roll >= (*root)->data.roll)//right subtree if inserted value is greater than/equal to root
         {
             insert(&((*root)->right),teamset);
         }
-        else if(teamset.roll < (*root)->data.roll)
+        else if(teamset.roll < (*root)->data.roll)//left subtree
         {
             insert(&((*root)->left),teamset);
         }
     }
 }
 
-void inorder(struct node* root)
+void inorder(struct node* root)//recursive function to print inorder format of BST
 {
     if(root != NULL)
     {
@@ -110,7 +110,7 @@ void inorder(struct node* root)
     }
 }
 
-void inorderWrite(struct node* root)
+void inorderWrite(struct node* root)//recursive function to write inorder format of BST to output file
 {
     if(root != NULL)
     {
