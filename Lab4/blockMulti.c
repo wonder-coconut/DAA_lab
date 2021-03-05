@@ -90,7 +90,7 @@ int main(int argc, char *argv[])//driver
 
     FILE *fileOut;
     fileOut = fopen("TimeLog.txt","a");
-    fprintf(fileOut,"Time for block multiplication for size %d : %lf\n",bl,(currentTime - baseTime));
+    fprintf(fileOut,"%d\t%lf\n",bl,(currentTime - baseTime));
 
     free(A);
     free(B);

@@ -66,6 +66,8 @@ Execution: ./bm <block length> {omit the < ./ > on cmd}
 This program attempts to multiply two 1024 * 1024 matrices, and prints the runtime for it. Output is not written to any file, but the runtime has been
 analyzed and plotted in the same root folder.
 
+Attached in the same folder is the plot.png, which maps the runtime for different values of blocksize (4,8,16,32,64)
+
 Given below are the function and members uses applied in the script:
 
 int len, int bl:
