@@ -4,7 +4,7 @@
 #include <math.h>
 
 int len = 1024;
-int bl = 16;
+int bl = 0;
 
 int initialize(int *arr, int l , int u)
 {
@@ -55,9 +55,16 @@ void printArray(int *arr)
 
 
 
-int main()
+int main(int argc, char *argv[])
 {
     struct timeval current_time;
+    bl = atoi(argv[1]);
+
+    if(bl!= 2 && bl!= 4 && bl!= 8 && bl!= 16)
+    {
+        printf("invalid choice of block length\n");
+        return 0;
+    }
 
     gettimeofday(&current_time, NULL);
     double baseTime = current_time.tv_sec + pow(10,-6)*current_time.tv_usec;
