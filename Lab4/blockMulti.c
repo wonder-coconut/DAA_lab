@@ -60,7 +60,7 @@ int main(int argc, char *argv[])//driver
     struct timeval current_time;//time function to calculate the runtim
     bl = atoi(argv[1]);//block length input
 
-    if(bl!= 2 && bl!= 4 && bl!= 8 && bl!= 16)//sanity check
+    if(bl!= 2 && bl!= 4 && bl!= 8 && bl!= 16 && bl!=32 && bl!=64)//sanity check
     {
         printf("invalid choice of block length\n");
         return 0;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])//driver
     
     gettimeofday(&current_time, NULL);
     currentTime = current_time.tv_sec + pow(10,-6)*current_time.tv_usec;
-    printf("Time for block multiplication for size %d : %lf\n",4,(currentTime - baseTime));//multiplication runtime
+    printf("Time for block multiplication for size %d : %lf\n",bl,(currentTime - baseTime));//multiplication runtime
 
     free(A);
     free(B);
