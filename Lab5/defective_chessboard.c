@@ -2,11 +2,12 @@
 #include <stdlib.h>
 
 int len, drow, dcol;
+int tileNum = 1;
 int *board;
 
-void reset()
+void black()
 {
-    printf("\033[0m");
+    printf("\033[1;30m");
 }
 void red()
 {
@@ -28,9 +29,19 @@ void blue()
     printf("\033[1;34m");
 }
 
+void cyan()
+{
+    printf("\033[1;36m");
+}
+
 void white()
 {
     printf("\033[1;37m");
+}
+
+void reset()
+{
+    printf("\033[0m");
 }
 
 void colour(int n)
@@ -39,7 +50,7 @@ void colour(int n)
     {
     
     case 0:
-        reset();
+        cyan();
         break;
     
     case 1:
@@ -63,49 +74,9 @@ void colour(int n)
         break;
 
     default:
+        black();
         break;
     }
-}
-
-void boardFill(int defRow, int defCol, int row , int col , int size, int tileNum)
-{
-    if(size == 1)
-        return;
-    
-    tileNum++;
-
-    if(drow < row + size/2 && dcol < col + size/2)
-        boardFill(defRow, defCol, row , col , size / 2 , tileNum);
-    else
-    {
-        board[(row + size/2 - 1)*len + col + size/2 - 1] = tileNum;
-        //boardFill(row + size/2 -1 , col + size/2 -1 , row, col , size/2 , tileNum);
-    }
-    
-    if(drow >= row + size/2 && dcol < col + size/2)
-        boardFill(defRow , defCol , row + size/2, col , size/2 , tileNum);
-    else
-    {
-        board[(row + size/2)*len + col + size/2 - 1] = tileNum;
-        //boardFill(row + size/2, col + size/2 - 1,row + size/2, col , size/2 , tileNum);
-    }
-
-    if(drow < row + size/2 && dcol >= col + size/2)
-        boardFill(defRow , defCol ,row, col + size/2 , size/2 , tileNum);
-    else
-    {
-        board[(row + size/2 - 1)*len + col + size/2] = tileNum;
-        //boardFill(row + size/2 - 1 , col + size/2 ,row, col + size/2 , size/2 , tileNum);
-    }
-
-    if(drow >= row + size/2 && dcol >= col + size/2)
-        boardFill(defRow, defCol, row + size/2, col + size/2 , size/2 , tileNum);
-    else
-    {
-        board[(row + size/2)*len + col + size/2] = tileNum;
-        //boardFill(row + size/2, col + size/2, row + size/2, col + size/2 , size/2 , tileNum);
-    }
-
 }
 
 void printBoard()
@@ -114,10 +85,52 @@ void printBoard()
     {
         for(int j = 0 ; j < len ; j++)
         {
-            colour(board[i*len + j]);
-            printf("%d ", board[i*len + j]);
+            if(board[i*len + j] == 0)
+                colour(-1);
+            else
+                colour(board[i*len + j]%6);
+            printf("%d\t", board[i*len + j]);
         }
-        printf("\n");
+        printf("\n\n");
+    }
+}
+
+void tileBoard(int topRow, int topCol , int defectRow ,int defectCol , int size)
+{
+    if (size == 1)
+        return;
+    
+    int tileToUse=tileNum++;
+
+    if (defectRow < topRow+size/2 && defectCol < topCol+size/2)
+        tileBoard(topRow,topCol,defectRow,defectCol,size/2);
+    else 
+    {
+        board[(topRow+size/2-1)*len + topCol+size/2-1]=tileToUse;
+        tileBoard(topRow,topCol,topRow+size/2-1,topCol+size/2-1,size/2);
+    }
+
+    if (defectRow >= topRow+size/2 & defectCol < topCol+size/2)
+        tileBoard(topRow+size/2,topCol,defectRow,defectCol,size/2);
+    else 
+    {
+        board[(topRow+size/2)*len + topCol+size/2-1]=tileToUse;
+        tileBoard(topRow+size/2,topCol,topRow+size/2,topCol+size/2-1,size/2);
+    }
+
+    if (defectRow < topRow+size/2 & defectCol >= topCol+size/2)
+        tileBoard(topRow,topCol+size/2,defectRow,defectCol,size/2);
+    else
+    { 
+        board[(topRow+size/2-1)*len + topCol+size/2]=tileToUse;
+        tileBoard(topRow,topCol+size/2,topRow+size/2-1,topCol+size/2,size/2);
+    }
+    if (defectRow >= topRow+size/2 & defectCol >= topCol+size/2)
+        tileBoard(topRow+size/2,topCol+size/2,defectRow,defectCol,size/2);
+    else
+    { 
+        board[(topRow+size/2)*len + topCol+size/2]=tileToUse;
+        tileBoard(topRow+size/2,topCol+size/2,topRow+size/2,topCol+size/2,size/2);
     }
 }
 
@@ -134,7 +147,7 @@ int main(int argc, char *argv[])
     }
     
     board = (int *)malloc(sizeof(int)*len*len);
-    boardFill(drow, dcol, 0 , 0 , len , 0);
+    tileBoard(0 , 0 , drow , dcol ,  len);
     printBoard();
 
     return 0;
