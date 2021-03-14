@@ -93,44 +93,45 @@ void printBoard()
         }
         printf("\n\n");
     }
+    colour(-1);
 }
 
-void tileBoard(int topRow, int topCol , int defectRow ,int defectCol , int size)
+void tileBoard(int row, int col , int defRow ,int defCol , int size)
 {
     if (size == 1)
         return;
     
-    int tileToUse=tileNum++;
+    int tile = tileNum++;
 
-    if (defectRow < topRow+size/2 && defectCol < topCol+size/2)
-        tileBoard(topRow,topCol,defectRow,defectCol,size/2);
+    if (defRow < row + size/2 && defCol < col + size/2)
+        tileBoard(row,col,defRow,defCol,size/2);
     else 
     {
-        board[(topRow+size/2-1)*len + topCol+size/2-1]=tileToUse;
-        tileBoard(topRow,topCol,topRow+size/2-1,topCol+size/2-1,size/2);
+        board[(row + size/2-1)*len + col + size/2-1] = tile;
+        tileBoard(row,col,row+size/2-1,col+size/2-1,size/2);
     }
 
-    if (defectRow >= topRow+size/2 & defectCol < topCol+size/2)
-        tileBoard(topRow+size/2,topCol,defectRow,defectCol,size/2);
+    if (defRow >= row + size/2 && defCol < col + size/2)
+        tileBoard(row+size/2,col,defRow,defCol,size/2);
     else 
     {
-        board[(topRow+size/2)*len + topCol+size/2-1]=tileToUse;
-        tileBoard(topRow+size/2,topCol,topRow+size/2,topCol+size/2-1,size/2);
+        board[(row + size/2)*len + col + size/2-1] = tile;
+        tileBoard(row+size/2,col,row+size/2,col+size/2-1,size/2);
     }
 
-    if (defectRow < topRow+size/2 & defectCol >= topCol+size/2)
-        tileBoard(topRow,topCol+size/2,defectRow,defectCol,size/2);
+    if (defRow < row + size/2 && defCol >= col + size/2)
+        tileBoard(row,col+size/2,defRow,defCol,size/2);
     else
     { 
-        board[(topRow+size/2-1)*len + topCol+size/2]=tileToUse;
-        tileBoard(topRow,topCol+size/2,topRow+size/2-1,topCol+size/2,size/2);
+        board[(row + size/2-1)*len + col + size/2] = tile;
+        tileBoard(row,col+size/2,row+size/2-1,col+size/2,size/2);
     }
-    if (defectRow >= topRow+size/2 & defectCol >= topCol+size/2)
-        tileBoard(topRow+size/2,topCol+size/2,defectRow,defectCol,size/2);
+    if (defRow >= row+size/2 && defCol >= col+size/2)
+        tileBoard(row+size/2,col+size/2,defRow,defCol,size/2);
     else
     { 
-        board[(topRow+size/2)*len + topCol+size/2]=tileToUse;
-        tileBoard(topRow+size/2,topCol+size/2,topRow+size/2,topCol+size/2,size/2);
+        board[(row + size/2)*len + col + size/2] = tile;
+        tileBoard(row+size/2,col+size/2,row+size/2,col+size/2,size/2);
     }
 }
 

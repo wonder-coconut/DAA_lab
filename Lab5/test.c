@@ -1,75 +1,27 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-void reset()
-{
-    printf("\033[0m");
-}
-void red()
-{
-    printf("\033[1;31m");
-}
 
-void green()
+void printArr(int arr[] , int len)
 {
-    printf("\033[1;32m");
-}
-
-void yellow()
-{
-    printf("\033[1;33m");
-}
-
-void blue()
-{
-    printf("\033[1;34m");
-}
-
-void white()
-{
-    printf("\033[1;37m");
-}
-
-void colour(int n)
-{
-    switch (n)
+    for(int i = 0 ; i < len ; i++)
     {
-    
-    case 0:
-        reset();
-        break;
-    
-    case 1:
-        red();
-        break;
-    
-    case 2:
-        green();
-        break;
-    
-    case 3:
-        yellow();
-        break;
-
-    case 4:
-        blue();
-        break;
-
-    case 5:
-        white();
-        break;
-
-    default:
-        break;
+        printf("%d ",arr[i]);
     }
+    printf("\n");
 }
+
+void swap(int arr[] , int l , int r)
+{
+    int temp = arr[l];
+    arr[l] = arr[r];
+    arr[r] = temp;
+}
+
 int main()
 {
-    for(int i = 1 ; i <= 20 ; i++)
-    {
-        colour(i%6);
-        printf("UwU\n");
-    }
-    
+    int arr[] = {1,4,2,3,5,6};
+    int len = 6;
+    swap(arr,1,4);
+    printArr(arr,len);
     return 0;
 }
