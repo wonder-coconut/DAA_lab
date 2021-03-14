@@ -79,7 +79,7 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
 {
     if(size == 1)
     {
-        C[0] = A[0] + B[0];
+        C[0] = A[0] * B[0];
         return C; 
     }
 
@@ -120,13 +120,13 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
     int *M6 = (int *)calloc(n*n,sizeof(int));
     int *M7 = (int *)calloc(n*n,sizeof(int));
 
-    /*strassen*/multiply(add(A11,A22,temp1,n),add(B11,B22,temp2,n),M1,n);
-    /*strassen*/multiply(add(A21,A22,temp1,n),B11,M2,n);
-    /*strassen*/multiply(A11,subtract(B12,B22,temp1,n),M3,n);
-    /*strassen*/multiply(A22,subtract(B21,B11,temp1,n),M4,n);
-    /*strassen*/multiply(add(A11,A12,temp1,n),B22,M5,n);
-    /*strassen*/multiply(subtract(A21,A11,temp1,n),add(B11,B12,temp2,n),M6,n);
-    /*strassen*/multiply(subtract(A12,A22,temp1,n),add(B21,B22,temp2,n),M7,n);
+    strassenMultiply(add(A11,A22,temp1,n),add(B11,B22,temp2,n),M1,n);
+    strassenMultiply(add(A21,A22,temp1,n),B11,M2,n);
+    strassenMultiply(A11,subtract(B12,B22,temp1,n),M3,n);
+    strassenMultiply(A22,subtract(B21,B11,temp1,n),M4,n);
+    strassenMultiply(add(A11,A12,temp1,n),B22,M5,n);
+    strassenMultiply(subtract(A21,A11,temp1,n),add(B11,B12,temp2,n),M6,n);
+    strassenMultiply(subtract(A12,A22,temp1,n),add(B21,B22,temp2,n),M7,n);
 
     
     int *C11 = (int *)calloc(n*n,sizeof(int));
