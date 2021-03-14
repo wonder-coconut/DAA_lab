@@ -121,13 +121,12 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
     int *M7 = (int *)calloc(n*n,sizeof(int));
 
     /*strassen*/multiply(add(A11,A22,temp1,n),add(B11,B22,temp2,n),M1,n);
-
     /*strassen*/multiply(add(A21,A22,temp1,n),B11,M2,n);
     /*strassen*/multiply(A11,subtract(B12,B22,temp1,n),M3,n);
     /*strassen*/multiply(A22,subtract(B21,B11,temp1,n),M4,n);
     /*strassen*/multiply(add(A11,A12,temp1,n),B22,M5,n);
     /*strassen*/multiply(subtract(A21,A11,temp1,n),add(B11,B12,temp2,n),M6,n);
-    /*strassen*/multiply(subtract(A12,A22,temp1,n),add(B21,B11,temp2,n),M7,n);
+    /*strassen*/multiply(subtract(A12,A22,temp1,n),add(B21,B22,temp2,n),M7,n);
 
     
     int *C11 = (int *)calloc(n*n,sizeof(int));
@@ -168,8 +167,8 @@ int main(int argc, char *argv[])
     int *C = (int *)calloc(len*len,sizeof(int));
     int *temp;
 
-    initialize(A,0,21,len);//matrix initialization
-    initialize(B,0,21,len); 
+    initialize(A,0,9,len);//matrix initialization
+    initialize(B,0,9,len); 
 
     /*gettimeofday(&current_time , NULL);
     baseTime = timeconvert(current_time.tv_sec , current_time.tv_usec);*/
