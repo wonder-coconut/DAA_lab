@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <math.h>
 
 int len, drow, dcol;
 int tileNum = 1;
@@ -13,37 +15,30 @@ void red()
 {
     printf("\033[1;31m");
 }
-
 void green()
 {
     printf("\033[1;32m");
 }
-
 void yellow()
 {
     printf("\033[1;33m");
 }
-
 void blue()
 {
     printf("\033[1;34m");
 }
-
 void cyan()
 {
     printf("\033[1;36m");
 }
-
 void white()
 {
     printf("\033[1;37m");
 }
-
 void reset()
 {
     printf("\033[0m");
 }
-
 void colour(int n)
 {
     switch (n)
@@ -77,6 +72,11 @@ void colour(int n)
         black();
         break;
     }
+}
+
+double timeconvert(double sec , double msec)
+{
+    return sec + pow(10,-6)*msec;
 }
 
 void printBoard()
@@ -137,19 +137,38 @@ void tileBoard(int row, int col , int defRow ,int defCol , int size)
 
 int main(int argc, char *argv[])
 {
+    struct timeval current_time;
+    double baseTime, currentTime;
+    int print;
+    baseTime = currentTime = 0.0;
+
     len = atoi(argv[1]);
     drow = atoi(argv[2]);
     dcol = atoi(argv[3]);
+    print = atoi(argv[4]);
 
     if(len == 0 || drow == 0 || dcol == 0 || drow > len || dcol > len)
     {
         printf("error");
         return 0;
     }
-    
+
+    gettimeofday(&current_time, NULL);
+    baseTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
+
     board = (int *)malloc(sizeof(int)*len*len);
     tileBoard(0 , 0 , drow , dcol ,  len);
-    printBoard();
+
+    gettimeofday(&current_time, NULL);
+    currentTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
+    printf("Runtime: %lf\n",currentTime - baseTime);
+
+    FILE *fileOut;
+    fileOut = fopen("TimeLog.txt","a");
+    fprintf(fileOut,"%d\t%lf\n",len,(currentTime - baseTime));
+    
+    if (print == 1)
+        printBoard();    
 
     return 0;
 }
