@@ -53,8 +53,6 @@ void printArray(int *arr)//function to print each element of the array
     }
 }
 
-
-
 int main(int argc, char *argv[])//driver
 {
     struct timeval current_time;//time function to calculate the runtim
@@ -94,6 +92,6 @@ int main(int argc, char *argv[])//driver
 
     free(A);
     free(B);
-    
+    free(C);
     return 0;
 }

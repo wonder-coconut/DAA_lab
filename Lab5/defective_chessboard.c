@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     printf("Runtime: %lf\n",currentTime - baseTime);
 
     FILE *fileOut;
-    fileOut = fopen("TimeLog.txt","a");
+    fileOut = fopen("TimeLogDC.txt","a");
     fprintf(fileOut,"%d\t\t%lf\n",len,(currentTime - baseTime));
     
     if (print == 1)
