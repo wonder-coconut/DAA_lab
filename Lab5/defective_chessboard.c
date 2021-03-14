@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
 
     FILE *fileOut;
     fileOut = fopen("TimeLog.txt","a");
-    fprintf(fileOut,"%d\t%lf\n",len,(currentTime - baseTime));
+    fprintf(fileOut,"%d\t\t%lf\n",len,(currentTime - baseTime));
     
     if (print == 1)
         printBoard();    
