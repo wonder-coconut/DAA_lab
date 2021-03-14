@@ -92,6 +92,7 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
     int *A12 = (int *)calloc(n*n,sizeof(int));
     int *A21 = (int *)calloc(n*n,sizeof(int));
     int *A22 = (int *)calloc(n*n,sizeof(int));
+    
     int *B11 = (int *)calloc(n*n,sizeof(int));
     int *B12 = (int *)calloc(n*n,sizeof(int));
     int *B21 = (int *)calloc(n*n,sizeof(int));
@@ -113,20 +114,25 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
     }
 
     int *M1 = (int *)calloc(n*n,sizeof(int));
-    int *M2 = (int *)calloc(n*n,sizeof(int));
-    int *M3 = (int *)calloc(n*n,sizeof(int));
-    int *M4 = (int *)calloc(n*n,sizeof(int));
-    int *M5 = (int *)calloc(n*n,sizeof(int));
-    int *M6 = (int *)calloc(n*n,sizeof(int));
-    int *M7 = (int *)calloc(n*n,sizeof(int));
+    multiply(add(A11,A22,temp1,n),add(B11,B22,temp2,n),M1,n);
 
-    strassenMultiply(add(A11,A22,temp1,n),add(B11,B22,temp2,n),M1,n);
-    strassenMultiply(add(A21,A22,temp1,n),B11,M2,n);
-    strassenMultiply(A11,subtract(B12,B22,temp1,n),M3,n);
-    strassenMultiply(A22,subtract(B21,B11,temp1,n),M4,n);
-    strassenMultiply(add(A11,A12,temp1,n),B22,M5,n);
-    strassenMultiply(subtract(A21,A11,temp1,n),add(B11,B12,temp2,n),M6,n);
-    strassenMultiply(subtract(A12,A22,temp1,n),add(B21,B22,temp2,n),M7,n);
+    int *M2 = (int *)calloc(n*n,sizeof(int));
+    multiply(add(A21,A22,temp1,n),B11,M2,n);
+
+    int *M3 = (int *)calloc(n*n,sizeof(int));
+    multiply(A11,subtract(B12,B22,temp1,n),M3,n);
+
+    int *M4 = (int *)calloc(n*n,sizeof(int));
+    multiply(A22,subtract(B21,B11,temp1,n),M4,n);
+
+    int *M5 = (int *)calloc(n*n,sizeof(int));
+    multiply(add(A11,A12,temp1,n),B22,M5,n);
+
+    int *M6 = (int *)calloc(n*n,sizeof(int));
+    multiply(subtract(A21,A11,temp1,n),add(B11,B12,temp2,n),M6,n);
+
+    int *M7 = (int *)calloc(n*n,sizeof(int));
+    multiply(subtract(A12,A22,temp1,n),add(B21,B22,temp2,n),M7,n);
 
     
     int *C11 = (int *)calloc(n*n,sizeof(int));
@@ -155,8 +161,8 @@ int * strassenMultiply(int *A , int *B , int *C,int size)
 
 int main(int argc, char *argv[])
 {
-    /*struct timeval current_time;
-    double baseTime, currentTime;*/
+    struct timeval current_time;
+    double baseTime, currentTime;
     int print;
 
     len = atoi(argv[1]);
@@ -170,26 +176,25 @@ int main(int argc, char *argv[])
     initialize(A,0,9,len);//matrix initialization
     initialize(B,0,9,len); 
 
-    /*gettimeofday(&current_time , NULL);
-    baseTime = timeconvert(current_time.tv_sec , current_time.tv_usec);*/
-
-    printArray(A);
-    printArray(B);
-    printArray(C);
+    gettimeofday(&current_time , NULL);
+    baseTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
 
     strassenMultiply(A,B,C,len);
 
-    printArray(A);
-    printArray(B);
-    printArray(C);
+    gettimeofday(&current_time , NULL);
+    currentTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
 
-    /*gettimeofday(&current_time , NULL);
-    currentTime = timeconvert(current_time.tv_sec , current_time.tv_usec);*/
+    FILE *fileOut;
+    fileOut = fopen("TimeLogSM.txt","a");
+    fprintf(fileOut,"%d\t\t%lf\n",len,(currentTime - baseTime));
+    printf("Time for multiplication: %lf\n",currentTime-baseTime);
 
-    /*FILE *fileOut;
-    fileOut = fopen("TimeLogDC.txt","a");
-    fprintf(fileOut,"%d\t\t%lf\n",len,(currentTime - baseTime));*/
-
+    if(print == 1)
+    {
+        printArray(A);
+        printArray(B);
+        printArray(C);
+    }
 
     free(A);
     free(B);

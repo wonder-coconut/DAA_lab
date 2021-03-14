@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
  
-timeLog = open("TimeLog.txt")
+timeLog = open("TimeLogDC.txt")
 data = timeLog.read().split()
 
 
