@@ -5,6 +5,37 @@
 
 int len;
 
+void Multiply( double** a, double** b, double** c,int x,int y,int size)
+{
+    if(size<=2)
+    {
+        int p,q,r,s,t,u,v;
+        p = (a[x][y]+a[x+1][y+1])*(b[x][y]+b[x+1][y+1]);
+        q = (a[x+1][y]+a[x+1][y+1])*b[x][y];
+        r = a[x][y]*(b[x][y+1]-b[x+1][y+1]);
+        s = a[x+1][y+1]*(b[x+1][y]-b[x][y]);
+        t = (a[x][y]+a[x][y+1])*b[x+1][y+1];
+        u = (a[x+1][y]-a[x][y])*(b[x][y]+b[x][y+1]);
+        v = (a[x][y+1]-a[x+1][y+1])*(b[x+1][y]+b[x+1][y+1]);
+        c[x][y]=p+s-t+v;
+        c[x][y+1]=r+t;
+        c[x+1][y]=q+s;
+        c[x+1][y+1]=p+r-q+u;
+
+    }
+    else
+    {
+        int num = (size/2);
+        Multiply(a,b,c,x,y,num);
+        Multiply(a,b,c,x+num,y,num);
+        Multiply(a,b,c,x,y+num,num);
+        Multiply(a,b,c,x+num,y+num,num);
+
+
+    }
+    
+}
+
 double timeconvert(double sec , double msec)
 {
     return sec + pow(10,-6)*msec;
@@ -179,8 +210,8 @@ int main(int argc, char *argv[])
     gettimeofday(&current_time , NULL);
     baseTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
 
-    strassenMultiply(A,B,C,len);
-
+    //strassenMultiply(A,B,C,len);
+    
     gettimeofday(&current_time , NULL);
     currentTime = timeconvert(current_time.tv_sec , current_time.tv_usec);
 
