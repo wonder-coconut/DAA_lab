@@ -2,7 +2,8 @@
 #include <stdlib.h>
 
 int len;
-void printArr(int arr[])
+
+void printArr(int arr[])//prints array
 {
     for(int i = 0 ; i < len ; i++)
     {
@@ -11,48 +12,51 @@ void printArr(int arr[])
     printf("\n");
 }
 
-int partition(int arr[] , int l , int r)
+void swap(int *a , int *b)//swaps two elements
 {
-    int x = arr[r];
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+int partition(int arr[] , int l , int r)//returns a random partition for the array
+{
     int i = l - 1;
-    int j;
-    for(j = l ; j < r ; j++)
+
+    for(int j = l ; j < r ; j++)
     {
-        if(arr[j] <= x)
+        if(arr[j] < arr[r])
         {
             i++;
-            int temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
+            swap(&arr[i] , &arr[j]);
         }
     }
 
-    ++i;
-    int temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
+    i++;
+    swap(&arr[i],&arr[r]);
     return i;
 }
 
-int quickSelect(int arr[] , int i, int l, int r)
+int quickSelect(int arr[] , int i, int l, int r)//finds the ith smallest number
 {
-    if (l == r)
-        return arr[l];
+    int pos = partition(arr,l,r);
     
-    int pos = partition(arr, l, r);
-    int count = pos - l + 1;
-    if ( count == i )
-        return arr[pos];
-    else if ( count > i )      
-        return quickSelect(arr, l, pos-1, i);
-    else                 
-        return quickSelect(arr, pos+1, r, i - count);   
+    if( pos == i)
+        return arr[i];
+    else if(pos > i)
+        return quickSelect(arr, i , l , pos - 1);
+    else
+        return quickSelect(arr, i , pos + 1, r);
 }
 
-int main(int argc , char *argv[])
+int main(int argc , char *argv[])//driver
 {
     len = argc - 2;
     int i = atoi(argv[1])-1;
+    if(i <= 0 || i >= len)
+    {
+        printf("Invalid input");
+        return 0;
+    }
     int arr[len];
 
     for(int j = 0 ; j < len ; j++)
