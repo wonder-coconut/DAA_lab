@@ -2,7 +2,7 @@ RISHAB RAMANATHAN
 ROLL:   19XJ1A0558
 TEAM:   46
 
-The folder is divided into 2 folders, one normal and one bonus.
+The folder is divided into 2 subfolders, one normal and one bonus.
 
 Normal:
 
