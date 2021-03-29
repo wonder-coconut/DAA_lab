@@ -41,7 +41,6 @@ In the loop:
     the number of jobs are exhausted.
 
 
-
 Common convenience functions:
 
 printArrayInt():
