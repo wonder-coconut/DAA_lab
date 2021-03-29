@@ -38,6 +38,11 @@ int maximum(float pw[] , int n)//returns the index of the max element, and delet
     return max_index;
 }
 
+int min(int a , int b)
+{
+    return (a<b)?a:b;
+}
+
 void knapsack(int p[] , int w[] , float pw[] , float x[] , int n , int cap)//function to implement the greedy method of the knapsack problem
 {
     int sack_weight = 0;
@@ -49,7 +54,7 @@ void knapsack(int p[] , int w[] , float pw[] , float x[] , int n , int cap)//fun
         total_weight += w[i];
     }
 
-    while (sack_weight < cap || sack_weight < total_weight)
+    while (sack_weight < min(cap , total_weight))
     {
         max_index = maximum( pw , n);        
         if(w[max_index] <= cap - sack_weight)//the whole object can be fit into the knapsack

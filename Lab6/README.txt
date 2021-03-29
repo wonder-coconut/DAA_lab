@@ -52,5 +52,8 @@ prints a floating point number array
 int maximum():
 returns the index of the maximum element, with a choice of deletion of the max element
 
+int min():
+returns the minimum of two inputs
+
 int main():
 driver function

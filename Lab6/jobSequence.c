@@ -30,6 +30,11 @@ int maximum(int arr[] , int n , int f)//returns the index of the max element, an
     return max_index;
 }
 
+int min(int a , int b)
+{
+    return (a<b)?a:b;
+}
+
 void sequencer(int p[] , int d[] , int n)//function to sequence jobs using greedy algorithm
 {
     int cap = d[maximum(d , n , 0)];//max deadline
@@ -40,8 +45,10 @@ void sequencer(int p[] , int d[] , int n)//function to sequence jobs using greed
     i = 0;
 
     int count = 0;
-    while(count < cap || count < n)
+    while(count < min(cap,n))
     {
+        printf("%d\t",count);
+        printArrayInt(x , cap);
         int job = maximum(p , n , 1);//most profitable job
         
         for(i = d[job] - 1 ; i >= 0 ; i--)//using latest possible deadline for each job
