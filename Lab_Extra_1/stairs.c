@@ -1,27 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int stairs(int n)
+int paths(int n)
 {
-    if(n <= 1)
-        return n;
-    return stairs(n-1) + stairs(n-2);
-}
-int main(int argc , char *argv[])
-{
-    if(argc != 2)
+    int a,b,c;
+    a = 0;
+    b = 1;
+    c = 1;
+
+    for(int i = 0 ; i < n ; i++)
     {
-        printf("invalid input");
+        c = a + b;
+        a = b;
+        b = c;
+    }
+
+    return c;
+}
+ 
+int main(int argc, char *argv[])
+{
+    if(argc < 1)
+    {
+        printf("invalid input\n");
         return 0;
     }
 
     int n = atoi(argv[1]);
-
+    
     if(n < 0)
     {
-        printf("invalid input");
+        printf("invalid input\n");
         return 0;
     }
 
-    printf("%d\n",stairs(n+1));
+    printf("%d",paths(n));
 }

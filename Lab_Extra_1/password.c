@@ -33,6 +33,7 @@ int password(int n , int sum)//returns the password for the constraints
 
     return res;
 }
+
 int main(int argc, char *argv[])
 {
     if(argc != 3)
