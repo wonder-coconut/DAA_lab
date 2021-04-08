@@ -15,6 +15,57 @@ struct list
     struct list *next;
 };
 
+void initializeInt(int arr[] , int n)
+{
+    for(int i = 0 ; i < n ; i++)
+        arr[i] = 0;
+}
+
+void initializeChar(char arr[] , int n)
+{
+    for(int i = 0 ; i < n ; i++)
+        arr[i] = '\0';
+}
+
+int search(char ch , char arr[] , int end)
+{
+    for(int i = 0 ; i <= end ; i++)
+    {
+        if(arr[i] == ch)
+            return i;
+    }
+    return -1;
+}
+
+int getFrequencyTable(char sym[] , int freq[])
+{
+    FILE* inputtext;
+    inputtext = fopen("test.txt","r");
+
+    char ch = ' ';
+    int i,end;
+    i = 0;
+    end = -1;
+
+    while((ch = fgetc(inputtext)) != EOF)
+    {
+        i = search(ch , sym , end);
+        if(i == -1)
+        {
+            end = end + 1;
+            sym[end] = ch;
+            freq[end] = freq[end] + 1;
+        }
+        else
+        {
+            freq[i] = freq[i] + 1;
+        }
+    }
+    fclose(inputtext);
+
+    return end;
+}
+
 struct huffman_node * createnode(char symbol , int freq , int pos)
 {
     struct huffman_node * temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
@@ -118,6 +169,12 @@ void printArray(int arr[] , int len)
     
 }
 
+void printFrequencyTable(char sym[] , int freq[] , int n)
+{
+    for(int i = 0 ; i < n ; i++)
+        printf("'%c':\t%d\n",sym[i] , freq[i]);
+}
+
 int listsize(struct list *root)
 {
     int count = 0;
@@ -176,11 +233,18 @@ void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bi
 
 int main()
 {
-    char sym[] = {'a','b','c','d','e','f'};
-    int freq[] = {5,9,12,13,16,45};
-    int len = sizeof(sym) / sizeof(sym[0]);
-    int bin[len];
-    for(int i = 0 ; i < len ; i++)
+    char sym[255];
+    int freq[255];
+
+    initializeInt(freq , 255);
+    initializeChar(sym , 255);
+
+    int end = 0;
+    end = getFrequencyTable(sym, freq);
+    printFrequencyTable(sym , freq , end + 1);
+
+    int bin[end + 1];
+    for(int i = 0 ; i <= end ; i++)
         bin[i] = 0;
 
     struct list *root = (struct list *)malloc(sizeof(struct list));
@@ -188,14 +252,19 @@ int main()
     root->next = NULL;
 
     int i = 1;
-    for( ; i < len ; i++)
+    for( ; i <= end ; i++)
         insertEnd( createnode(sym[i] , freq[i] , i) , root);
     
     root = huffmanTree(root);
+
     huffmancode(root->data , root->data , bin , 0);
 
+    printf("~~~~~~~~~~~~~~~~~~~~~~~\n");
+
     printlist(root , 0);
+
+    printf("~~~~~~~~~~~~~~~~~~~~~~~\n");
     
-    printArray(bin , len);
+    printArray(bin , end + 1);
     return 0;
 }
