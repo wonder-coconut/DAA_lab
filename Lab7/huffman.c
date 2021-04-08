@@ -3,6 +3,7 @@
 
 struct huffman_node
 {
+    int pos;
     char symbol;
     int freq;
     struct huffman_node * left , * right;
@@ -14,9 +15,10 @@ struct list
     struct list *next;
 };
 
-struct huffman_node * createnode(char symbol , int freq)
+struct huffman_node * createnode(char symbol , int freq , int pos)
 {
     struct huffman_node * temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
+    temp->pos = pos;
     temp->symbol = symbol;
     temp->freq = freq;
     temp->left = temp->right = NULL;
@@ -78,7 +80,7 @@ void inorder(struct huffman_node * root)
     if(root != NULL)
     {
         inorder(root->left);
-        printf("|%c %d|",root->symbol , root->freq);
+        printf("|[%d] %c %d|",root->pos , root->symbol , root->freq);
         inorder(root->right);
     }
 }
@@ -87,7 +89,7 @@ void preorder(struct huffman_node * root)
 {
     if(root != NULL)
     {
-        printf("|%c %d|",root->symbol , root->freq);
+        printf("|[%d] %c %d|",root->pos , root->symbol , root->freq);
         preorder(root->left);
         preorder(root->right);
     }
@@ -139,6 +141,7 @@ struct list * huffmanTree(struct list *root)
 
         temp->freq = f1+f2;
         temp->symbol = '\0';
+        temp->pos = -1;
         temp->left = root->data;
         temp->right = root->next->data;
 
@@ -151,23 +154,38 @@ struct list * huffmanTree(struct list *root)
     return root;
 }
 
+void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bin[], int binary)
+{
+    if(temp->left == NULL)
+    {
+        bin[temp->pos] = binary;
+    }
+    else
+    {
+        huffmancode(root , temp->left , bin , binary*10 + 0);
+        huffmancode(root , temp->right, bin, binary*10 + 1);
+    }
+}
+
 int main()
 {
     char sym[] = {'a','b','c','d','e','f'};
     int freq[] = {5,9,12,13,16,45};
     int len = sizeof(sym) / sizeof(sym[0]);
+    int bin[len];
 
     struct list *root = (struct list *)malloc(sizeof(struct list));
-    root->data = createnode(sym[0] , freq[0]);
+    root->data = createnode(sym[0] , freq[0] , 0);
     root->next = NULL;
 
     int i = 1;
     for( ; i < len ; i++)
-        insertEnd( createnode(sym[i] , freq[i]) , root);
+        insertEnd( createnode(sym[i] , freq[i] , i) , root);
     
     root = huffmanTree(root);
+    
 
     printlist(root, 0);
-    printlist(root , 1);
+    //printlist(root , 1);
     return 0;
 }
