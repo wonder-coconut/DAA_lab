@@ -1,47 +1,173 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-
-void initializeInt(int arr[] , int n)
+struct huffman_node
 {
-    for(int i = 0 ; i < n ; i++)
-        arr[i] = 0;
+    char symbol;
+    int freq;
+    struct huffman_node * left , * right;
+};
+
+struct list
+{
+    struct huffman_node * data;
+    struct list *next;
+};
+
+struct huffman_node * createnode(char symbol , int freq)
+{
+    struct huffman_node * temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
+    temp->symbol = symbol;
+    temp->freq = freq;
+    temp->left = temp->right = NULL;
+
+    return temp;
 }
 
-void initializeChar(char arr[] , int n)
+void insertEnd(struct huffman_node *data , struct list *root)
 {
-    for(int i = 0 ; i < n ; i++)
-        arr[i] = NULL;
+    struct list *temp;
+    temp = root;
+    while(temp->next != NULL)
+        temp = temp->next;
+    
+    
+    temp->next = (struct list *)malloc(sizeof(struct list));
+    temp->next->data = data;
+    temp->next->next = NULL;
+    
 }
 
-void printArrayInt(int arr[] , int n)
+struct list * insertOrder(struct huffman_node *data , struct list *root)
 {
-    for (int i = 0; i < n; i++)
+    struct list *temp , *temp2;
+    temp = root;
+
+    if(temp->data->freq > data->freq)
     {
-        printf("%d ",arr[i]);
+        temp = (struct list *)malloc(sizeof(struct list));
+        temp->data = data;
+        temp->next = root;
+        root = temp;
+
+        return root; 
     }
-    printf("\n");
+
+    while(temp->next != NULL)
+    {
+        if(data->freq < temp->next->data->freq)
+            break;
+        temp = temp->next;
+    }
+
+    temp2 = (struct list *)malloc(sizeof(struct list));
+    temp2->data = data;
+    temp2->next = temp->next;
+    temp->next = temp2;
+
+    return root;
 }
 
-void printArrayChar(char arr[] , int n)
+struct list * deleteStart(struct list * root)
 {
-    for (int i = 0; i < n || arr[i] != NULL; i++)
+    return root->next;
+}
+
+void inorder(struct huffman_node * root)
+{
+    if(root != NULL)
     {
-        printf("%c ",arr[i]);
-    }   
+        inorder(root->left);
+        printf("|%c %d|",root->symbol , root->freq);
+        inorder(root->right);
+    }
+}
+
+void preorder(struct huffman_node * root)
+{
+    if(root != NULL)
+    {
+        printf("|%c %d|",root->symbol , root->freq);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+void printlist(struct list *root , int ch)
+{
+    struct list * temp;
+    temp = root;
+
+    while(temp != NULL)
+    {
+        if(ch == 0)
+            inorder(temp->data);
+        else if(ch == 1)
+            preorder(temp->data);
+        temp = temp->next;
+        printf("\n");
+    }
+}
+
+int listsize(struct list *root)
+{
+    int count = 0;
+    struct list *temp;
+    temp = root;
+
+    while(temp != NULL)
+    {
+        temp = temp->next;
+        count++;
+    }
+
+    return count;
+}
+
+struct list * huffmanTree(struct list *root)
+{
+    struct huffman_node * temp;
+    temp = NULL;
+    int f1,f2;
+    f1 = f2 = 0;
+
+    while(listsize(root) != 1)
+    {
+        f1 = root->data->freq;
+        f2 = root->next->data->freq;
+        temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
+
+        temp->freq = f1+f2;
+        temp->symbol = '\0';
+        temp->left = root->data;
+        temp->right = root->next->data;
+
+        root = insertOrder(temp , root);
+        root = deleteStart(root);
+        root = deleteStart(root);
+        
+    }
+
+    return root;
 }
 
 int main()
 {
-    FILE* file;
-    file = fopen("test.txt","r");
-    char symbols[255];
-    int frequency[255];
+    char sym[] = {'a','b','c','d','e','f'};
+    int freq[] = {5,9,12,13,16,45};
+    int len = sizeof(sym) / sizeof(sym[0]);
 
-    initializeInt(frequency , 255);
-    initializeChar(symbols , 255);
+    struct list *root = (struct list *)malloc(sizeof(struct list));
+    root->data = createnode(sym[0] , freq[0]);
+    root->next = NULL;
 
-    printArrayInt(frequency , 255);
-    printArrayChar(symbols , 255);
-    symbols[0] = 'a';
-    symbols[1] = 'b';    
+    int i = 1;
+    for( ; i < len ; i++)
+        insertEnd( createnode(sym[i] , freq[i]) , root);
+    
+    root = huffmanTree(root);
+
+    printlist(root, 0);
+    printlist(root , 1);
+    return 0;
 }
