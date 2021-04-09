@@ -231,6 +231,42 @@ void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bi
     }
 }
 
+void printbinfile(char sym[] , int bin[] , int lenBin[] , int len)
+{
+    FILE *binptr , *txtptr;
+    txtptr = fopen("test.txt" , "r");
+    binptr = fopen("test.bin" , "wb");
+    
+    unsigned char ch = 0;
+    char symbol = '\0';
+    int i, index, buffbin , buffLen , count;
+    i = index = buffLen = buffbin = count = 0;
+    
+    while((symbol = fgetc(txtptr)) != EOF)
+    {
+        index = search(symbol , sym , len - 1);
+        buffbin = bin[index];
+        buffLen = lenBin[index];
+        printf("%c %d %d %d\n",symbol,index,buffbin,buffLen);
+        while(i < buffLen)
+        {
+            buffbin = buffbin / 10;
+            ch = ch | buffbin;
+            count++;
+
+            if(count % 8 == 0)
+            {
+                fwrite(&ch , sizeof(ch) , 1 , binptr);
+                ch = 0;
+                count = 0;
+            }
+
+            ch = ch << 1;
+            i++;
+        }
+    }
+}
+
 int main()
 {
     char sym[255];
@@ -266,5 +302,24 @@ int main()
     printf("~~~~~~~~~~~~~~~~~~~~~~~\n");
     
     printArray(bin , end + 1);
+
+    int lenBin[end + 1];
+    int n;
+    n = 0;
+
+    for(int i = 0 ; i < end + 1 ; i++)
+    {
+        lenBin[i] = 0;
+        n = bin[i];
+
+        while (n != 0)
+        {
+            n/=10;
+            lenBin[i]++;
+        }
+    }
+
+    printbinfile(sym , bin , lenBin ,  end + 1);
+
     return 0;
 }
