@@ -402,6 +402,7 @@ int main()
     printf("Frequency table gen, ");
     end = getFrequencyTable(sym, freq);
     printf("Done\n");
+
     //printFrequencyTable(sym , freq , end + 1);
 
     printf("sorting arrays,");
@@ -432,6 +433,7 @@ int main()
     huffmancode(root->data , root->data , code , 0);
     printf("Done\n");
 
+    printArray(code , end + 1);
     printf("writing to binary file, ");
     printbinfile(sym , code , end + 1);
     printf("Done\n");
