@@ -72,6 +72,80 @@ int getFrequencyTable(char sym[] , int freq[])
     return end;
 }
 
+void merge(char sym[] , int freq[] , int l , int m , int r)
+{
+    int lenl = m - l + 1;
+    int lenr = r - m;
+
+    int fl[lenl] , fr[lenr];
+    char sl[lenl] , sr[lenr];
+
+    int i,j,k;
+    i = j = k = 0;
+
+    for( ; i < lenl ; i++)
+    {
+        fl[i] = freq[l+i];
+        sl[i] = sym[l+i];
+    }
+
+    for( i = 0 ; i < lenr ; i++)
+    {
+        fr[i] = freq[m+i+1];
+        sr[i] = sym[m+i+1];
+    }
+
+    i = j = 0;
+    k = l;
+
+    while(i < lenl && j < lenr)
+    {
+        if(fl[i] < fr[j])
+        {
+            freq[k] = fl[i];
+            sym[k] = sl[i];
+            i++;
+            k++;
+        }
+        else
+        {
+            freq[k] = fr[j];
+            sym[k] = sr[j];
+            j++;
+            k++;
+        }
+    }
+
+    while(i < lenl)
+    {        
+        freq[k] = fl[i];
+        sym[k] = sl[i];
+        i++;
+        k++;
+    }
+
+    while (j < lenr)
+    {
+        freq[k] = fr[j];
+        sym[k] = sr[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort(char sym[] , int freq[] , int l , int r)
+{
+    if(l < r)
+    {
+        int m = (l + r)/2;
+
+        mergesort(sym , freq , l , m);
+        mergesort(sym , freq , m+1 , r);
+
+        merge(sym , freq , l , m , r);
+    }
+}
+
 struct huffman_node * createnode(char symbol , int freq , int pos)
 {
     struct huffman_node * temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
@@ -188,62 +262,6 @@ void printFrequencyTable(char sym[] , int freq[] , int n)
         printf("'%c':\t%d\n",sym[i] , freq[i]);
 }
 
-int listsize(struct list *root)
-{
-    int count = 0;
-    struct list *temp;
-    temp = root;
-
-    while(temp != NULL)
-    {
-        temp = temp->next;
-        count++;
-    }
-
-    return count;
-}
-
-struct list * huffmanTree(struct list *root)
-{
-    struct huffman_node * temp;
-    temp = NULL;
-    int f1,f2;
-    f1 = f2 = 0;
-
-    while(listsize(root) != 1)
-    {
-        f1 = root->data->freq;
-        f2 = root->next->data->freq;
-        temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
-
-        temp->freq = f1+f2;
-        temp->symbol = '\0';
-        temp->pos = -1;
-        temp->left = root->data;
-        temp->right = root->next->data;
-
-        root = insertOrder(temp , root);
-        root = deleteStart(root);
-        root = deleteStart(root);
-        
-    }
-
-    return root;
-}
-
-void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bin[], int binary)
-{
-    if(temp->left == NULL)
-    {
-        bin[temp->pos] = binary;
-    }
-    else
-    {
-        huffmancode(root , temp->left , bin , binary*2 + 0);
-        huffmancode(root , temp->right, bin, binary*2 + 1);
-    }
-}
-
 void printbinfile(char sym[] , int code[] , int len)
 {
     FILE * binptr, *txtptr;
@@ -314,17 +332,83 @@ void printbinfile(char sym[] , int code[] , int len)
     fclose(txtptr);
 }
 
+int listsize(struct list *root)
+{
+    int count = 0;
+    struct list *temp;
+    temp = root;
+
+    while(temp != NULL)
+    {
+        temp = temp->next;
+        count++;
+    }
+
+    return count;
+}
+
+struct list * huffmanTree(struct list *root)
+{
+    struct huffman_node * temp;
+    temp = NULL;
+    int f1,f2;
+    f1 = f2 = 0;
+
+    while(listsize(root) != 1)
+    {
+        f1 = root->data->freq;
+        f2 = root->next->data->freq;
+        temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
+
+        temp->freq = f1+f2;
+        temp->symbol = '\0';
+        temp->pos = -1;
+        temp->left = root->data;
+        temp->right = root->next->data;
+
+        root = insertOrder(temp , root);
+        root = deleteStart(root);
+        root = deleteStart(root);
+        
+    }
+
+    return root;
+}
+
+void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bin[], int binary)
+{
+    if(temp->left == NULL)
+    {
+        bin[temp->pos] = binary;
+    }
+    else
+    {
+        huffmancode(root , temp->left , bin , binary*2 + 0);
+        huffmancode(root , temp->right, bin, binary*2 + 1);
+    }
+}
+
 int main()
 {
     char sym[255];
     int freq[255];
 
+    printf("Initializing arrays, ");
     initializeInt(freq , 255);
     initializeChar(sym , 255);
+    printf("Done\n");
 
     int end = 0;
+    printf("Frequency table gen, ");
     end = getFrequencyTable(sym, freq);
-    printFrequencyTable(sym , freq , end + 1);
+    printf("Done\n");
+    //printFrequencyTable(sym , freq , end + 1);
+
+    printf("sorting arrays,");
+    mergesort(sym , freq , 0 , end);
+    printf("Done\n");
+
+    //printFrequencyTable(sym , freq, end + 1);
 
     int code[end + 1];
     for(int i = 0 ; i <= end ; i++)
@@ -334,25 +418,23 @@ int main()
     root->data = createnode(sym[0] , freq[0] , 0);
     root->next = NULL;
 
+    printf("creating list, ");
     int i = 1;
     for( ; i <= end ; i++)
         insertEnd( createnode(sym[i] , freq[i] , i) , root);
-    
+    printf("Done\n");
+
+    printf("generating huffman tree, ");
     root = huffmanTree(root);
+    printf("Done\n");
 
+    printf("generating huffman code, ");
     huffmancode(root->data , root->data , code , 0);
+    printf("Done\n");
 
-    printf("~~~~~~~~~~~~~~~~~~~~~~~\n");
-
-    printlist(root , 0);
-
-    printf("~~~~~~~~~~~~~~~~~~~~~~~\n");
-    
-    printCharArray(sym , end + 1);
-    printf("\n");
-    printArray(code , end + 1);
-
+    printf("writing to binary file, ");
     printbinfile(sym , code , end + 1);
+    printf("Done\n");
 
     return 0;
 }
