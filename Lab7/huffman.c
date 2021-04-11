@@ -266,7 +266,7 @@ void printbinfile(char sym[] , int code[] , int len)
 {
     FILE * binptr, *txtptr;
     txtptr = fopen("test.txt","r");
-    binptr = fopen("test.bin","wb");
+    binptr = fopen("output.bin","wb");
 
     int codeLen[6];
     int i = 0;
@@ -388,8 +388,52 @@ void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bi
     }
 }
 
-int main()
+void decoder(struct huffman_node *root)
 {
+    struct huffman_node *temp;
+    temp = root;
+    unsigned char ch = 0;
+    int bin , count;
+    bin = count = 0;
+
+    FILE *binptr , *textptr;
+    binptr = fopen("output.bin","rb");
+    textptr = fopen("decompressed.txt","w");
+    
+    while((ch = fgetc(binptr)) != EOF)
+    {
+        while(count <= 8)
+        {
+            count++;
+            bin = ch%2;
+            
+            if(bin)
+                temp = temp->right;
+            else
+                temp = temp->left;
+            
+            if(temp->symbol != '\0')
+            {
+                fprintf(textptr , "%c" , ch);
+                temp = root;
+            }
+            
+            ch = ch << 1;
+        }
+        count = 0;
+    }
+}
+
+int main(int argc , char * argv[])
+{
+    if(argc == 1)
+    {
+        printf("invalid input \n");
+        return 0;
+    }
+
+    int flag = atoi(argv[1]);
+
     char sym[255];
     int freq[255];
 
@@ -437,6 +481,9 @@ int main()
     printf("writing to binary file, ");
     printbinfile(sym , code , end + 1);
     printf("Done\n");
+
+    if(flag == 1)
+        decoder(root->data);
 
     return 0;
 }

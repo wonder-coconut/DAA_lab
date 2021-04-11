@@ -1,34 +1,47 @@
-#include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
 
-#define V 9
+int len = 0;
 
 int minDistance(int dist[], int sptSet[])
 {
 	// Initialize min value
 	int min = INT_MAX, min_index;
 
-	for (int v = 0; v < V; v++)
+	for (int v = 0; v < len; v++)
 		if (sptSet[v] == 0 && dist[v] <= min)
 			min = dist[v], min_index = v;
 
 	return min_index;
 }
 
+void printMatrix(int cost[len][len])
+{
+	for(int i = 0 ; i < len ; i++)
+	{
+		for(int j = 0 ; j < len ; j++)
+		{
+			printf("%d ",cost[i][j]);
+		}
+		printf("\n");
+	}
+}
+
 void printSolution(int dist[])
 {
 	printf("Vertex \t\t Distance from Source\n");
-	for (int i = 0; i < V; i++)
+	for (int i = 0; i < len; i++)
 		printf("%d \t\t %d\n", i, dist[i]);
 }
 
-void ssp(int graph[V][V], int src)
+void ssp(int graph[len][len], int src)
 {
-	int dist[V]; 
+	int dist[len]; 
 
-	int sptSet[V];
+	int sptSet[len];
 
-	for (int i = 0; i < V; i++)
+	for (int i = 0; i < len; i++)
     {
 		dist[i] = INT_MAX;
         sptSet[i] = 0;
@@ -36,14 +49,14 @@ void ssp(int graph[V][V], int src)
 
 	dist[src] = 0;
 
-	for (int count = 0; count < V - 1; count++) 
+	for (int count = 0; count < len - 1; count++) 
     {
 		
 		int u = minDistance(dist, sptSet);
 
 		sptSet[u] = 1;
 
-		for (int v = 0; v < V; v++)
+		for (int v = 0; v < len; v++)
 
 
 			if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
@@ -52,19 +65,31 @@ void ssp(int graph[V][V], int src)
 	printSolution(dist);
 }
 
-int main()
+int main(int argc , char * argv[])
 {
-	int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
-						{ 4, 0, 8, 0, 0, 0, 0, 11, 0 },
-						{ 0, 8, 0, 7, 0, 4, 0, 0, 2 },
-						{ 0, 0, 7, 0, 9, 14, 0, 0, 0 },
-						{ 0, 0, 0, 9, 0, 10, 0, 0, 0 },
-						{ 0, 0, 4, 14, 10, 0, 2, 0, 0 },
-						{ 0, 0, 0, 0, 0, 2, 0, 1, 6 },
-						{ 8, 11, 0, 0, 0, 0, 1, 0, 7 },
-						{ 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
+	if(argc <= 3)
+	{
+		printf("Invalid input\n");
+		return 0;
+	}
 
-	ssp(graph, 0);
+	len = atoi(argv[1]);
+	int s = atoi(argv[2]);
+
+	if(argc < 3 + len*len)
+	{
+		printf("Invalid input\n");
+		return 0;
+	}
+
+	int cost[len][len];
+
+	for(int i = 0; i < len ;i ++)
+		for(int j = 0 ; j < len ; j++)
+			cost[i][j] = atoi(argv[3 + i*len + j]);
+
+	printMatrix(cost);
+	ssp(cost, s);
 
 	return 0;
 }
