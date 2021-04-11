@@ -262,7 +262,7 @@ void printFrequencyTable(char sym[] , int freq[] , int n)
         printf("'%c':\t%d\n",sym[i] , freq[i]);
 }
 
-void printbinfile(char sym[] , int code[] , int len)
+void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte , int * finalcount)
 {
     FILE * binptr, *txtptr;
     txtptr = fopen("test.txt","r");
@@ -330,6 +330,9 @@ void printbinfile(char sym[] , int code[] , int len)
     }
     fclose(binptr);
     fclose(txtptr);
+
+    *finalbyte = ch;
+    *finalcount = count;
 }
 
 int listsize(struct list *root)
@@ -388,13 +391,14 @@ void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bi
     }
 }
 
-void decoder(struct huffman_node *root)
+void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * finalcount)
 {
     struct huffman_node *temp;
     temp = root;
     unsigned char ch = 0;
-    int bin , count;
+    int bin , count , lim;
     bin = count = 0;
+    lim = 8;
 
     FILE *binptr , *textptr;
     binptr = fopen("output.bin","rb");
@@ -403,8 +407,15 @@ void decoder(struct huffman_node *root)
     while(!feof(binptr))
     {
         ch = fgetc(binptr);
+    
         printf("%x\t",ch);
-        while(count < 8)
+
+        if(ch == *finalbyte)
+        {
+            lim = *finalcount;
+        }
+
+        while(count < lim)
         {
 
             if(temp->symbol != '\0')
@@ -489,11 +500,16 @@ int main(int argc , char * argv[])
    // printf("\n");
 
     //printf("writing to binary file, ");
-    //printbinfile(sym , code , end + 1);
+    unsigned char finalbyte;
+    int finalcount;
+    finalbyte = finalcount = 0;
+    printbinfile(sym , code , end + 1 , &finalbyte , &finalcount);
     //printf("Done\n");
 
+    //printf("%x %d\n",finalbyte,finalcount);
+
     if(flag == 1)
-        decoder(root->data);
+        decoder(root->data , &finalbyte , &finalcount);
 
     return 0;
 }
