@@ -408,18 +408,37 @@ void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * fina
     {
         ch = fgetc(binptr);
     
-        printf("%x\t",ch);
+        printf("\n|%x|",ch);
 
         if(ch == *finalbyte)
         {
-            lim = *finalcount;
+            for(int i = 0 ; i < lim - 1 ; i++)
+            {
+                if(temp->symbol != '\0')
+                {
+                    printf("%c",temp->symbol);
+                    fprintf(textptr , "%c" , temp->symbol);
+                    temp = root;
+                }
+
+                bin = ch/(int)pow(2,7);
+
+                if(bin)
+                    temp = temp->right;
+                else
+                    temp = temp->left;
+
+                ch = ch << 1;
+            }
+            break;
         }
 
-        while(count < lim)
+        while(count < 8)
         {
 
             if(temp->symbol != '\0')
             {
+                printf("%c",temp->symbol);
                 fprintf(textptr , "%c" , temp->symbol);
                 temp = root;
             }
@@ -436,9 +455,11 @@ void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * fina
         }
         count = 0;
     }
+
+    
 }
 
-int main(int argc , char * argv[])
+int main(int argc , char * argv[])//driver
 {
     if(argc == 1)
     {
@@ -451,23 +472,15 @@ int main(int argc , char * argv[])
     char sym[255];
     int freq[255];
 
-    //printf("Initializing arrays, ");
     initializeInt(freq , 255);
     initializeChar(sym , 255);
-   // printf("Done\n");
 
     int end = 0;
-    //printf("Frequency table gen, ");
     end = getFrequencyTable(sym, freq);
-    //printf("Done\n");
 
-    //printFrequencyTable(sym , freq , end + 1);
-
-    //printf("sorting arrays,");
     mergesort(sym , freq , 0 , end);
-    //printf("Done\n");
 
-    //printFrequencyTable(sym , freq, end + 1);
+    printFrequencyTable(sym , freq, end + 1);
 
     int code[end + 1];
     for(int i = 0 ; i <= end ; i++)
@@ -477,36 +490,23 @@ int main(int argc , char * argv[])
     root->data = createnode(sym[0] , freq[0] , 0);
     root->next = NULL;
 
-    //printf("creating list, ");
     int i = 1;
     for( ; i <= end ; i++)
         insertEnd( createnode(sym[i] , freq[i] , i) , root);
-    //printf("Done\n");
 
-    //printlist(root, 0);
-
-    //printf("generating huffman tree, ");
     root = huffmanTree(root);
-    //printf("Done\n");
 
-    //inorder(root->data);
-    //printf("\n");
-
-    //printf("generating huffman code, ");
     huffmancode(root->data , root->data , code , 0);
-    //printf("Done\n");
 
-    //printArray(code , end + 1);
-   // printf("\n");
+    printArray(code , end + 1);
+    printf("\n");
 
-    //printf("writing to binary file, ");
     unsigned char finalbyte;
     int finalcount;
     finalbyte = finalcount = 0;
     printbinfile(sym , code , end + 1 , &finalbyte , &finalcount);
-    //printf("Done\n");
 
-    //printf("%x %d\n",finalbyte,finalcount);
+    printf("%x %d\n",finalbyte,finalcount);
 
     if(flag == 1)
         decoder(root->data , &finalbyte , &finalcount);
