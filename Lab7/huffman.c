@@ -400,24 +400,27 @@ void decoder(struct huffman_node *root)
     binptr = fopen("output.bin","rb");
     textptr = fopen("decompressed.txt","w");
     
-    while((ch = fgetc(binptr)) != EOF)
+    while(!feof(binptr))
     {
-        while(count <= 8)
+        ch = fgetc(binptr);
+        printf("%x\t",ch);
+        while(count < 8)
         {
+
+            if(temp->symbol != '\0')
+            {
+                fprintf(textptr , "%c" , temp->symbol);
+                temp = root;
+            }
+
             count++;
-            bin = ch%2;
+            bin = ch/(int)pow(2,7);
             
             if(bin)
                 temp = temp->right;
             else
                 temp = temp->left;
-            
-            if(temp->symbol != '\0')
-            {
-                fprintf(textptr , "%c" , ch);
-                temp = root;
-            }
-            
+
             ch = ch << 1;
         }
         count = 0;
@@ -437,21 +440,21 @@ int main(int argc , char * argv[])
     char sym[255];
     int freq[255];
 
-    printf("Initializing arrays, ");
+    //printf("Initializing arrays, ");
     initializeInt(freq , 255);
     initializeChar(sym , 255);
-    printf("Done\n");
+   // printf("Done\n");
 
     int end = 0;
-    printf("Frequency table gen, ");
+    //printf("Frequency table gen, ");
     end = getFrequencyTable(sym, freq);
-    printf("Done\n");
+    //printf("Done\n");
 
     //printFrequencyTable(sym , freq , end + 1);
 
-    printf("sorting arrays,");
+    //printf("sorting arrays,");
     mergesort(sym , freq , 0 , end);
-    printf("Done\n");
+    //printf("Done\n");
 
     //printFrequencyTable(sym , freq, end + 1);
 
@@ -463,24 +466,31 @@ int main(int argc , char * argv[])
     root->data = createnode(sym[0] , freq[0] , 0);
     root->next = NULL;
 
-    printf("creating list, ");
+    //printf("creating list, ");
     int i = 1;
     for( ; i <= end ; i++)
         insertEnd( createnode(sym[i] , freq[i] , i) , root);
-    printf("Done\n");
+    //printf("Done\n");
 
-    printf("generating huffman tree, ");
+    //printlist(root, 0);
+
+    //printf("generating huffman tree, ");
     root = huffmanTree(root);
-    printf("Done\n");
+    //printf("Done\n");
 
-    printf("generating huffman code, ");
+    //inorder(root->data);
+    //printf("\n");
+
+    //printf("generating huffman code, ");
     huffmancode(root->data , root->data , code , 0);
-    printf("Done\n");
+    //printf("Done\n");
 
-    printArray(code , end + 1);
-    printf("writing to binary file, ");
-    printbinfile(sym , code , end + 1);
-    printf("Done\n");
+    //printArray(code , end + 1);
+   // printf("\n");
+
+    //printf("writing to binary file, ");
+    //printbinfile(sym , code , end + 1);
+    //printf("Done\n");
 
     if(flag == 1)
         decoder(root->data);
