@@ -28,7 +28,7 @@ void initializeChar(char arr[] , int n)
         arr[i] = '\0';
 }
 
-int search(char ch , char arr[] , int end)
+int search(char ch , char arr[] , int end)//binary search
 {
     for(int i = 0 ; i <= end ; i++)
     {
@@ -43,7 +43,7 @@ int ispoweroftwo(int n)
     return floor(log2(n)) == ceil(log2(n));
 }
 
-int getFrequencyTable(char sym[] , int freq[])
+int getFrequencyTable(char sym[] , int freq[])//function to get the frequency table from file
 {
     FILE* inputtext;
     inputtext = fopen("test.txt","r");
@@ -56,11 +56,11 @@ int getFrequencyTable(char sym[] , int freq[])
     while((ch = fgetc(inputtext)) != EOF)
     {
         i = search(ch , sym , end);
-        if(i == -1)
+        if(i == -1)//new character
         {
             end = end + 1;
             sym[end] = ch;
-            freq[end] = freq[end] + 1;
+            freq[end] = freq[end] + 1;//frequency increment
         }
         else
         {
@@ -146,7 +146,7 @@ void mergesort(char sym[] , int freq[] , int l , int r)
     }
 }
 
-struct huffman_node * createnode(char symbol , int freq , int pos)
+struct huffman_node * createnode(char symbol , int freq , int pos)//function to create huffman tree node
 {
     struct huffman_node * temp = (struct huffman_node *)malloc(sizeof(struct huffman_node));
     temp->pos = pos;
@@ -157,7 +157,7 @@ struct huffman_node * createnode(char symbol , int freq , int pos)
     return temp;
 }
 
-void insertEnd(struct huffman_node *data , struct list *root)
+void insertEnd(struct huffman_node *data , struct list *root)//insert list node at end
 {
     struct list *temp;
     temp = root;
@@ -171,12 +171,12 @@ void insertEnd(struct huffman_node *data , struct list *root)
     
 }
 
-struct list * insertOrder(struct huffman_node *data , struct list *root)
+struct list * insertOrder(struct huffman_node *data , struct list *root)//insert list node in ascending order
 {
     struct list *temp , *temp2;
     temp = root;
 
-    if(temp->data->freq > data->freq)
+    if(temp->data->freq > data->freq)//first element insert
     {
         temp = (struct list *)malloc(sizeof(struct list));
         temp->data = data;
@@ -188,14 +188,14 @@ struct list * insertOrder(struct huffman_node *data , struct list *root)
 
     while(temp->next != NULL)
     {
-        if(data->freq < temp->next->data->freq)
+        if(data->freq < temp->next->data->freq)//finding position to insert
             break;
         temp = temp->next;
     }
 
     temp2 = (struct list *)malloc(sizeof(struct list));
     temp2->data = data;
-    temp2->next = temp->next;
+    temp2->next = temp->next;//insertion
     temp->next = temp2;
 
     return root;
@@ -226,7 +226,7 @@ void preorder(struct huffman_node * root)
     }
 }
 
-void printlist(struct list *root , int ch)
+void printlist(struct list *root , int ch)//print list contents
 {
     struct list * temp;
     temp = root;
@@ -262,7 +262,7 @@ void printFrequencyTable(char sym[] , int freq[] , int n)
         printf("'%c':\t%d\n",sym[i] , freq[i]);
 }
 
-void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte , int * finalcount)
+void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte , int * finalcount)//write compressed binary file
 {
     FILE * binptr, *txtptr;
     txtptr = fopen("test.txt","r");
@@ -288,13 +288,13 @@ void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte 
         index = search(symbol , sym , len);
         bufflen = codeLen[index];
         
-        if(8 - count >= bufflen)
+        if(8 - count >= bufflen)//direct addition of character code
         {
             ch = ch << bufflen;
             ch = ch | code[index];
             count += bufflen;
         }
-        else
+        else//bitwise addition of character code
         {
             buffcode = code[index];
             templen = bufflen;
@@ -308,14 +308,14 @@ void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte 
                     count = 0;
                 }
                 ch = ch << 1;
-                ch = ch | (buffcode/(int)(pow(2,templen-1)));
+                ch = ch | (buffcode/(int)(pow(2,templen-1)));//bit extraction
                 count += 1;
                 buffcode = buffcode % (int)(pow(2,templen-1));
                 templen--;
             }
         }
 
-        if(count == 8)
+        if(count == 8)//write buffer
         {
             fwrite(&ch , sizeof(ch) , 1 , binptr);
             ch = 0;
@@ -323,7 +323,7 @@ void printbinfile(char sym[] , int code[] , int len , unsigned char * finalbyte 
         }
     }
 
-    if(ch != 0)
+    if(ch != 0)//final byte write
     {
         ch = ch << (8 - count);
         fwrite(&ch , sizeof(ch) , 1 , binptr);
@@ -350,7 +350,7 @@ int listsize(struct list *root)
     return count;
 }
 
-struct list * huffmanTree(struct list *root)
+struct list * huffmanTree(struct list *root)//function to generate huffman tree
 {
     struct huffman_node * temp;
     temp = NULL;
@@ -378,7 +378,7 @@ struct list * huffmanTree(struct list *root)
     return root;
 }
 
-void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bin[], int binary)
+void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bin[], int binary)//huffman encoding
 {
     if(temp->left == NULL)
     {
@@ -386,12 +386,12 @@ void huffmancode(struct huffman_node * root , struct huffman_node * temp, int bi
     }
     else
     {
-        huffmancode(root , temp->left , bin , binary*2 + 0);
-        huffmancode(root , temp->right, bin, binary*2 + 1);
+        huffmancode(root , temp->left , bin , binary*2 + 0);//left subtree
+        huffmancode(root , temp->right, bin, binary*2 + 1);//right subtree
     }
 }
 
-void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * finalcount)
+void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * finalcount)//binary file decoder
 {
     struct huffman_node *temp;
     temp = root;
@@ -407,28 +407,25 @@ void decoder(struct huffman_node *root , unsigned char * finalbyte , int  * fina
     while(!feof(binptr))
     {
         ch = fgetc(binptr);
-    
-        printf("\n|%x|",ch);
 
         if(ch == *finalbyte)
         {
-            for(int i = 0 ; i < lim - 1 ; i++)
+            for(int i = 0 ; i < lim - 1 ; i++)//writes until number of specified bits, instead of full byte
             {
-                if(temp->symbol != '\0')
+                if(temp->symbol != '\0')//until leaf node is encountered
                 {
-                    printf("%c",temp->symbol);
                     fprintf(textptr , "%c" , temp->symbol);
                     temp = root;
                 }
 
-                bin = ch/(int)pow(2,7);
+                bin = ch/(int)pow(2,7);//most significant bit
 
                 if(bin)
                     temp = temp->right;
                 else
                     temp = temp->left;
 
-                ch = ch << 1;
+                ch = ch << 1;//left shift
             }
             break;
         }
