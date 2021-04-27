@@ -4,13 +4,22 @@
 
 int findways(int m , int n , int x)
 {
-    int sum = 0;
-    if(n == 1)
-        return 1;
-    for(int i = 1 ; i <= m && x - i > 0; i++)
-        sum += findways(m , n - 1, x - i);
-    return sum;
+    int sum[n + 1][x + 1];
+    for(int i = 0 ; i <= n ; i++)
+        for(int j = 0 ; j <= x ; j++)
+            sum[i][j] = 0;
+
+    for (int j = 1; j <= m && j <= x; j++)
+        sum[1][j] = 1;
+  
+    for (int i = 2; i <= n; i++)
+        for (int j = 1; j <= x; j++)
+            for (int k = 1; k <= m && k < j; k++)
+                sum[i][j] += sum[i-1][j-k];
+  
+    return sum[n][x];
 }
+
 int main(int argc, char *argv[])
 {
     int m,n,x;
