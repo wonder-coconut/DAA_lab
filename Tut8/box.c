@@ -18,14 +18,23 @@ int max (int x, int y)
 { 
     return (x > y)? x : y; 
 }
-
+  
+/* Following function is needed for library function qsort(). We
+   use qsort() to sort boxes in decreasing order of base area. 
+   Refer following link for help of qsort() and compare()
+   http://www.cplusplus.com/reference/clibrary/cstdlib/qsort/ */
 int compare (const void *a, const void * b)
 {
     return ( (*(struct Box *)b).d * (*(struct Box *)b).w ) - ( (*(struct Box *)a).d * (*(struct Box *)a).w );
 }
-
+  
+/* Returns the height of the tallest stack that can be
+   formed with give type of boxes */
 int maxStackHeight( struct Box arr[], int n )
 {
+   /* Create an array of all rotations of given boxes
+      For example, for a box {1, 2, 3}, we consider three
+      instances{{1, 2, 3}, {2, 1, 3}, {3, 1, 2}} */
    struct Box rot[3*n];
    int index = 0;
    for (int i = 0; i < n; i++)
@@ -36,27 +45,37 @@ int maxStackHeight( struct Box arr[], int n )
       rot[index].w = min(arr[i].d, arr[i].w);
       index++;
   
-      // First rotation 
+      // First rotation of box
       rot[index].h = arr[i].w;
       rot[index].d = max(arr[i].h, arr[i].d);
       rot[index].w = min(arr[i].h, arr[i].d);
       index++;
   
-      // Second rotation 
+      // Second rotation of box
       rot[index].h = arr[i].d;
       rot[index].d = max(arr[i].h, arr[i].w);
       rot[index].w = min(arr[i].h, arr[i].w);
       index++;
    }
   
+   // Now the number of boxes is 3n
    n = 3*n;
   
+   /* Sort the array 'rot[]' in non-increasing order
+      of base area */
    qsort (rot, n, sizeof(rot[0]), compare);
   
+   // Uncomment following two lines to print all rotations
+   // for (int i = 0; i < n; i++ )
+   //    printf("%d x %d x %d\n", rot[i].h, rot[i].w, rot[i].d);
+  
+   /* Initialize msh values for all indexes 
+      msh[i] --> Maximum possible Stack Height with box i on top */
    int msh[n];
    for (int i = 0; i < n; i++ )
       msh[i] = rot[i].h;
   
+   /* Compute optimized msh values in bottom up manner */
    for (int i = 1; i < n; i++ )
       for (int j = 0; j < i; j++ )
          if ( rot[i].w < rot[j].w &&
@@ -67,7 +86,8 @@ int maxStackHeight( struct Box arr[], int n )
               msh[i] = msh[j] + rot[i].h;
          }
   
-
+  
+   /* Pick maximum of all msh values */
    int max = -1;
    for ( int i = 0; i < n; i++ )
       if ( max < msh[i] )
@@ -75,19 +95,14 @@ int maxStackHeight( struct Box arr[], int n )
   
    return max;
 }
-
-int main(int argc , char *argv[])
+  
+/* Driver program to test above function */
+int main()
 {
-   int n = (argc-1)/3;
-   struct Box arr[n];
-   for(int i = 0 ; i < argc-1 ; i+=3)
-   {
-      arr[i].h = atoi(argv[i+1]);
-      arr[i].w = atoi(argv[i+2]);
-      arr[i].d = atoi(argv[i+3]);
-   }
-
-   printf("%d\n",maxStackHeight(arr , n));  
-   
-   return 0;
+  struct Box arr[] = { {4, 6, 7}, {1, 2, 3}, {4, 5, 6}, {10, 12, 32} };
+  int n = sizeof(arr)/sizeof(arr[0]);
+  
+  printf("%d\n",maxStackHeight (arr, n) );
+  
+  return 0;
 }

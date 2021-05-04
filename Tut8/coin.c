@@ -23,12 +23,6 @@ int count( int S[], int m, int n )
             table[i][j] = x + y;
         }
 
-    for(int i = 0 ; i <= n ; i++)
-    {
-        for(int j = 0 ; j < m ; j++)
-            printf("%d ",table[i][j]);
-        printf("\n");
-    }
     return table[n][m-1];
 }
 int main(int argc, char *argv[])
