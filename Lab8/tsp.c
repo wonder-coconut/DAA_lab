@@ -1,69 +1,67 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <limits.h>
 
-int n_vertex;
+void print2D(int arr[] , int n)
+{
+    for(int i = 0 ; i < n ; i++)
+    {
+        for(int j = 0 ; j < n ; j++)
+            printf("%d\t",arr[i*n + j]);
+        printf("\n");
+    }
+}
 
-int remlength(char arr[n_vertex])
+void print1D(int arr[] , int n)
+{
+    for(int i = 0 ; i < n ; i++)
+        printf("%d ",arr[i]);
+}
+
+int efflength(int arr[] , int n)
 {
     int count = 0;
-    for(int i = 0 ; i < n_vertex ; i++)
+    for(int i = 0 ; i < n ; i++)
         if(arr[i] != -1)
             count++;
     return count;
 }
-int tsp(int v , int *cost, char temp[])
-{
-    if(remlength(temp) == 0)
-    {
-        printf("cost at v,1:%d\n",cost[(v-1)*n_vertex + 0]);
-        return cost[(v-1)*n_vertex + 0];
-    }
-    int minimum = INT_MAX;
-    int t1,t2;
-    t1 = t2 = 0;
-    temp[v-1] = -1;
-    for(int k = v + 1 ; k <= n_vertex ; k++)
-    {
-        if(temp[k-1] != -1)
-        {
-            t1 = cost[(v-1)*n_vertex + k - 1];
-            t1 += tsp(k , cost , temp);
 
-            if(minimum > t1)
-                minimum = t1;
+int g(int v , int sequence[] , int cost[] , int n_vertex)
+{
+    if(efflength(sequence , n_vertex) == 0)
+        return cost[(v-1)*n_vertex + 0];
+    int minimum,tempcost;
+    minimum = INT_MAX;
+    tempcost = 0;
+    for(int k = 1 ; k <= n_vertex ; k++)
+    {
+        if(sequence[k-1] != -1)
+        {
+            tempcost = cost[(v-1)*n_vertex + k-1];
+            sequence[k-1] = -1;
+            tempcost += g(k , sequence , cost , n_vertex);
+            sequence[k-1] = k;
+
+            if(minimum > tempcost)
+                minimum = tempcost;
         }
     }
     return minimum;
 }
-void tspdriver(int *cost)
+
+int tspdriver(int cost[] , int n_vertex)
 {
-    char temp[n_vertex];
-    for(int i = 0; i < n_vertex ; i++)
-        temp[i] = i+1;
-    printf("\ncost :\t%d\n",tsp(1 , cost  , temp));
-    return;
-}
-int main(int argc , char *argv[])
-{
-    if(argc < 3)
-    {
-        printf("invalid\n");
-        return 0;
-    }
-    n_vertex = atoi(argv[1]);
-    if(argc != 2 + n_vertex * n_vertex) // total number of arguments
-    {
-        printf("invalid\n");
-        return 0;
-    }
-    
-    int cost[n_vertex][n_vertex];
+    int sequence[n_vertex];
     for(int i = 0 ; i < n_vertex ; i++)
-        for(int j = 0 ; j < n_vertex ; j++)
-            cost[i][j] = atoi(argv[i*n_vertex + j]);       
-    
-    tspdriver(&cost[0][0]);
-    return 0;
+        sequence[i] = i + 1;
+    sequence[0] = -1;
+    return g(1 , sequence , cost , n_vertex);
+}
+
+int main()
+{
+    int n_vertex = 4;
+    int cost[4*4] = {0,10,15,20,10,0,35,25,15,35,0,30,20,25,30,0};
+    printf("%d\n",tspdriver(cost , n_vertex));
 }
