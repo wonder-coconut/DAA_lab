@@ -2,23 +2,21 @@
 #include <stdlib.h>
 #include <limits.h>
 
-void print2D(int arr[] , int n)
+int search(int arr[] , int n , int term)//linear search
 {
     for(int i = 0 ; i < n ; i++)
-    {
-        for(int j = 0 ; j < n ; j++)
-            printf("%d\t",arr[i*n + j]);
-        printf("\n");
-    }
+        if(arr[i] == term)
+            return i;
+    return -1;
 }
 
-void print1D(int arr[] , int n)
+void print1D(int arr[] , int n)//print 1D array
 {
     for(int i = 0 ; i < n ; i++)
         printf("%d ",arr[i]);
 }
 
-int efflength(int arr[] , int n)
+int efflength(int arr[] , int n)//length of array without -1's
 {
     int count = 0;
     for(int i = 0 ; i < n ; i++)
@@ -27,9 +25,9 @@ int efflength(int arr[] , int n)
     return count;
 }
 
-int g(int v , int sequence[] , int cost[] , int n_vertex)
+int g(int v , int sequence[] , int cost[] , int n_vertex , int tour[] , int counter)//recursive function to find the minimum cost
 {
-    if(efflength(sequence , n_vertex) == 0)
+    if(efflength(sequence , n_vertex) == 0)//base case
         return cost[(v-1)*n_vertex + 0];
     int minimum,tempcost;
     minimum = INT_MAX;
@@ -38,30 +36,44 @@ int g(int v , int sequence[] , int cost[] , int n_vertex)
     {
         if(sequence[k-1] != -1)
         {
-            tempcost = cost[(v-1)*n_vertex + k-1];
+            tempcost = cost[(v-1)*n_vertex + k-1];//cost of (v,k)
             sequence[k-1] = -1;
-            tempcost += g(k , sequence , cost , n_vertex);
-            sequence[k-1] = k;
+            tempcost += g(k , sequence , cost , n_vertex , tour , counter + 1);//recursive relation
+            sequence[k-1] = k;//restoring sequence
 
             if(minimum > tempcost)
+            {
+                if(search(tour , n_vertex , k) == -1 && search(tour , n_vertex , v) != -1)//printing tour
+                    tour[counter] = k;
                 minimum = tempcost;
+            }
         }
     }
     return minimum;
 }
 
-int tspdriver(int cost[] , int n_vertex)
+int tspdriver(int cost[] , int n_vertex)//driver for tsp
 {
     int sequence[n_vertex];
+    int tour[n_vertex];
     for(int i = 0 ; i < n_vertex ; i++)
+    {
+        tour[i] = 0;
         sequence[i] = i + 1;
+    }
     sequence[0] = -1;
-    return g(1 , sequence , cost , n_vertex);
+    tour[0] = 1;
+    int res = g(1 , sequence , cost , n_vertex , tour , 1);
+    print1D(tour , n_vertex);
+    return res;
 }
 
-int main()
+int main(int argc, char *argv[])//program driver
 {
-    int n_vertex = 4;
-    int cost[4*4] = {0,10,15,20,10,0,35,25,15,35,0,30,20,25,30,0};
-    printf("%d\n",tspdriver(cost , n_vertex));
+    int n_vertex;
+    n_vertex = atoi(argv[1]);
+    int cost[n_vertex * n_vertex];
+    for(int i = 0 ; i < n_vertex*n_vertex ; i++)
+        cost[i] = atoi(argv[i+2]);
+    printf("\n%d\n",tspdriver(cost , n_vertex));
 }

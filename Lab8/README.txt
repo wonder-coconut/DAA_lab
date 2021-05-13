@@ -85,3 +85,18 @@ Since the number of columns/could exceed 10, using a single number to store this
 Therefore, the number is represented in an array of n bytes, where n is the number of rows of the matrix.
 Those combinations could then be computed on to find the maximum reliability value under the max cost, which would yield
 us the result.
+
+2) tsp.c
+
+Compilation:    gcc tsp.c -o tsp
+Execution:      ./tsp <number of nodes> <cost matrix>
+
+Enter the cost matrix as a single dimensional array in row major order, each element seperated by a space
+
+The logic of the program is modelled around implementation of the recursive function:
+
+    g(1 , V - {1}) = min(c1k + g(k, V - {1,k})) ; 2<=k<=n
+
+This function implemented in C gives us the minimum cost of a path in the graph.
+The minimum tour of the graph is computed by adding the corresponding nodes of the minimum cost added at each recursion
+level of the graph.
