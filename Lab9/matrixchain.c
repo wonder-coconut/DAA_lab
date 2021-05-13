@@ -78,11 +78,16 @@ int MatrixChainOrder(int* p, int n)
     return res;
 }
 
-int main()
+int main(int argc , char * argv[])
 {
-	int arr[] = { 40,20,30,10,30 };
-	int n = 5;
-
-	printf("\n%d\n",MatrixChainOrder(arr, n));
+    if(argc == 1)
+    {
+        printf("invalid\n");
+        return 0;
+    }
+    int arr[argc - 1];
+    for(int i = 0 ; i < argc - 1 ; i++)
+        arr[i] = atoi(argv[i+1]);
+	printf("\n%d\n",MatrixChainOrder(arr, argc - 1));
 }
 
