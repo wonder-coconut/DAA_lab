@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include <limits.h>
 
-struct sym
-{
-    struct sym * prev;
-    char ch;
-    struct sym * next;
-};
-
 int min (int a , int b)
 {
     return (a>b ? b : a);
@@ -68,12 +61,6 @@ int MatrixChainOrder(int* p, int n)
             table[i*n + j] = -1;
         }
 	int res = chaincalc(table ,sequence , p, i, j , n);
-    /*for(int i = 0 ; i < n ; i++)
-    {
-        for(int j = 0 ; j < n ; j++)
-            printf("%d|%d\t",table[i*n + j],sequence[i*n + j]);
-        printf("\n");
-    }*/
     printOptimal(sequence , n);
     return res;
 }
