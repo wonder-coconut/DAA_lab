@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void printMatrix(int arr[] , int n)
+void printMatrix(int arr[] , int n)//utility function
 {
     for(int i = 0 ; i < n ; i++)
     {
@@ -11,7 +11,7 @@ void printMatrix(int arr[] , int n)
     }
 }
 
-int isSafe(int arr[] , int i , int j , int n)
+int isSafe(int arr[] , int i , int j , int n)//checks if the position is safe with current orientation of queens
 {
     int ii , jj;
     for(ii = 0 ; ii < n ; ii++)
@@ -21,13 +21,13 @@ int isSafe(int arr[] , int i , int j , int n)
             
             if(arr[ii*n + jj] == 1)
             {
-                if(ii == i)
+                if(ii == i)//row check
                     return 0;
-                else if(jj == j)
+                else if(jj == j)//column check
                     return 0;
-                else if(ii - jj == i - j)
+                else if(ii - jj == i - j)//right diagonal check
                     return 0;
-                else if(ii + jj == i + j)
+                else if(ii + jj == i + j)//left diagonal check
                     return 0;
             }
         }
@@ -35,27 +35,27 @@ int isSafe(int arr[] , int i , int j , int n)
     return 1;
 }
 
-int nqsolver(int arr[] , int n , int column)
+int nqsolver(int arr[] , int n , int column)//recursive function to fill the matrix
 {
-    if(column == n)
+    if(column == n)//all queens are filled
         return 1;
     
-    for(int i = 0 ; i < n ; i++)
+    for(int i = 0 ; i < n ; i++)//row wise checking
     {
-        if(isSafe(arr , i , column , n))
+        if(isSafe(arr , i , column , n))//checking each element validity
         {
             arr[i*n + column] = 1;
-            if(nqsolver(arr , n , column + 1))
+            if(nqsolver(arr , n , column + 1))//recursively fill the other queens
                 return 1;
-            arr[i*n + column] = 0;
+            arr[i*n + column] = 0;//only executed if the previous condition is false, i.e. queen is in the wrong position
         }
     }
-    return 0;
+    return 0;//no solution
 }
 
-void nqueens(int n)
+void nqueens(int n)//driver for nqsolver
 {
-    int arr[n*n];
+    int arr[n*n];//chessboard
     int i,j;
     i = j = 0;
     for(i = 0 ; i < n ; i++)
@@ -63,11 +63,11 @@ void nqueens(int n)
             arr[i*n + j] = 0;
     
     int res = nqsolver(arr , n , 0);
-    if(res)
+    if(res)//if a solution exists
         printMatrix(arr,n);
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char * argv[])//main driver
 {
     if(argc != 2)
     {
