@@ -1,14 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void printMatrix(int arr[] , int n)//utility function
+void printFileMatrix(int arr[] , int n)//utility function
 {
+    FILE *foutput;
+    foutput = fopen("nqueen.txt","a");
     for(int i = 0 ; i < n ; i++)
     {
         for(int j = 0 ; j < n ; j++)
-            printf("%d ",arr[i*n + j]);
-        printf("\n");
+            if(arr[i*n + j] == 0)
+                fprintf(foutput,"- ");
+            else
+                fprintf(foutput,"q ");
+        fprintf(foutput,"\n");
     }
+    fprintf(foutput,"----------------------------------------\n");
+    fclose(foutput);
 }
 
 int isSafe(int arr[] , int i , int j , int n)//checks if the position is safe with current orientation of queens
@@ -64,7 +71,7 @@ void nqueens(int n)//driver for nqsolver
     
     int res = nqsolver(arr , n , 0);
     if(res)//if a solution exists
-        printMatrix(arr,n);
+        printFileMatrix(arr,n);
 }
 
 int main(int argc, char * argv[])//main driver
